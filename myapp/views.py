@@ -1,25 +1,38 @@
+import json
+
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .forms import AccountForm, Accountserializer, Itemsserializer
+from .forms import AccountForm, Accountserializer, Itemsserializer, RegisterSerializer
 from .models import Account, Item
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 # Create your views here.
 from django.core import serializers
+from django.contrib.auth.models import User
 
 
 @api_view(['GET', 'POST'])
 def Accounts_list(request):
+    print(request)
     if request.method =='GET':
         accounts = Account.objects.all()
         seri = Accountserializer(accounts, many=True)
         return Response(seri.data)
     elif request.method == 'POST':
-        seri = Accountserializer(data=request.data)
-        if seri.is_valid():
-            seri.save()
-            return Response(seri.data, status=status.HTTP_201_CREATED)
+        user = {'username':request.data['username'], 'email':request.data['email'],'password':request.data['password'],
+                'password2':request.data['password2']}
+        seri_user = RegisterSerializer(data=user)
+        if seri_user.is_valid():
+            seri_user.save()
+        user = User.objects.get(username=request.data['username'])
+        my_account = {'user': user.id,'name':request.data['name'], 'gender':request.data['gender'],'age':request.data['age'],
+                'place':request.data['place'], 'prefix':request.data['prefix'], 'phone':request.data['phone']}
+        seri_account = Accountserializer(data=my_account)
+        print("seri_account:", seri_account.is_valid())
+        if seri_account.is_valid():
+            seri_account.save()
+            return Response(seri_account.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def Accounts_detail(request, id):
@@ -32,6 +45,7 @@ def Accounts_detail(request, id):
         return Response(seri.data)
     elif request.method == 'PUT':
         seri = Accountserializer(account, data=request.data)
+        print(seri.is_valid())
         if seri.is_valid():
             seri.save()
             return Response(seri.data)
@@ -40,11 +54,15 @@ def Accounts_detail(request, id):
         account.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-@api_view(['GET'])
+@api_view(['GET','POST'])
 def Items_list(request):
+    if request.method=='POST':
+        seri = Itemsserializer(data=request.data)
+        if seri.is_valid():
+            seri.save()
+            return Response(seri.data, status=status.HTTP_201_CREATED)
     if request.method =='GET':
         items = Item.objects.all()
-        print(items)
         seri = Itemsserializer(items, many=True)
         return Response(seri.data)
 

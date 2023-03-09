@@ -24,7 +24,7 @@ class Item(models.Model):
         blank=False,
     )
     description = models.CharField(max_length=200, blank=True)
-    image = models.ImageField(blank=True)
+    image = models.ImageField(blank=True, null=True)
     def __str__(self):
         return self.item_name
 
