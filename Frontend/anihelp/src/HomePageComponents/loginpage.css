@@ -1,0 +1,44 @@
+.ModalBackground{
+    /* width: 85vw; */
+    width: 70vw;
+    height: 95vh;
+    background-color: rgba(157, 120, 120, 0);
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modalContainer{
+    width: 550px;
+    height: 500px;
+    border-radius: 12px;
+    background-color:rgba(237, 230, 230, 0.838);
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+}
+.modalContainer .title{
+    display: inline-block;
+    text-align: center;
+    margin-top: 10px;
+}
+.cancelBtn{
+    position: absolute;
+    top: 60%;
+    left: 52%;
+    background-color: transparent;
+    /* border: none; */
+    font-size: 15px;
+    cursor: pointer;
+}
+.submitBtn{
+    position: absolute;
+    top: 60%;
+    left: 42%;
+    background-color: transparent;
+    /* border: none; */
+    font-size: 15px;
+    cursor: pointer;
+}

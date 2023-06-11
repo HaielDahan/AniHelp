@@ -1,0 +1,60 @@
+.sModalBackground{
+    width: 100vw;
+    height: 95vh;
+    background-color: rgba(157, 120, 120, 0);
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.smodalContainer{
+    width: 900px;
+    height: 700px;
+    border-radius: 12px;
+    background-color:rgba(237, 230, 230, 0.838);
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+}
+.smodalContainer .stitle{
+    display: inline-block;
+    text-align: center;
+    margin-top: 10px;
+}
+.cancelSBtn{
+    position: absolute;
+    top: 85%;
+    left: 52%;
+    background-color: transparent;
+    /* border: none; */
+    font-size: 15px;
+    cursor: pointer;
+}
+.submitSBtn{
+    position: absolute;
+    top: 85%;
+    left: 42%;
+    background-color: transparent;
+    /* border: none; */
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* label {
+    display: contents;
+    flex-direction: column;
+    margin-bottom: 0px;
+  }
+   */
+  input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
