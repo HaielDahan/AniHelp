@@ -2,7 +2,7 @@ import json
 
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .forms import AccountForm, Accountserializer, Itemsserializer, RegisterSerializer
+from .forms import AccountForm, Accountserializer, Itemsserializer, RegisterSerializer, LoginSerializer
 from .models import Account, Item
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -11,10 +11,23 @@ from rest_framework import status
 from django.core import serializers
 from django.contrib.auth.models import User
 
+from rest_framework import status
+
+
+
+
+@api_view(['POST'])
+def Login_view(request):
+    serializer = LoginSerializer(data=request.data)
+    if serializer.is_valid():
+        return Response({'message': 'Authentication successful'}, status=status.HTTP_200_OK)
+    else:
+        print(request.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET', 'POST'])
 def Accounts_list(request):
-    print(request)
     if request.method =='GET':
         accounts = Account.objects.all()
         seri = Accountserializer(accounts, many=True)

@@ -34,7 +34,7 @@ function Homepage() {
       <h1 className='display-1 position-absolute top-0 start-50 translate-middle-x'>AniHelp</h1>
         <nav className='bd-highlight" w-20'>
           <div>
-          <button className="openModalBtn" onClick={handleLoginButtonClick}>Sign in</button>
+          <button className="openModalBtn" onClick={handleLoginButtonClick}>login</button>
           {openModal && <Loginpage closeModal= {setOpenModal}/>}  
             {/* <Link to="/Login">Login</Link> */}
           </div>

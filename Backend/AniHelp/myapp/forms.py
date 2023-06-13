@@ -2,6 +2,21 @@ from django import forms
 from .models import Account, Item
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=150)
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        username = attrs.get('username')
+        password = attrs.get('password')
+
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                return attrs
+        raise serializers.ValidationError('Invalid username or password')
+
 
 class Accountserializer(serializers.ModelSerializer):
     class Meta:
