@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import "./loginpage.css";
-import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, TextField } from '@mui/material';
+import {TextField } from '@mui/material';
 
 
 
@@ -25,8 +25,10 @@ function Loginpage({closeModal}) {
     axios.post('http://127.0.0.1:8000/myapp/auth', data)
       .then(response => {
         console.log(response.data);
+        const authToken = response.data['detail'];
+        localStorage.setItem('authToken', authToken);
         // Perform any necessary actions after successful login
-        //navigate('/newpage'); // Navigate to the new page
+        navigate('/userportal'); // Navigate to the new page
       })
       .catch(error => {
         console.error(error);
@@ -36,9 +38,8 @@ function Loginpage({closeModal}) {
   const handleChange = (e, myKey) =>{
     setData(prevdata=>({...prevdata, [myKey]:e.target.value}))    
   }
-  useEffect(()=>{console.log(data)} ,[data])
+  // useEffect(()=>{console.log(data)} ,[data])
     
-  
   return (
     <div className='ModalBackground'>
       <div className='modalContainer'>
@@ -69,13 +70,4 @@ function Loginpage({closeModal}) {
 }
 
 export default Loginpage;
-
-    // const { data } = await axios.post('http://127.0.0.1:8000/auth',
-  //   {
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //       username: loginData.username,
-  //       password: loginData.password
-  //   },);
 

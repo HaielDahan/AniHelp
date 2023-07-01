@@ -10,20 +10,32 @@ from rest_framework import status
 # Create your views here.
 from django.core import serializers
 from django.contrib.auth.models import User
-
+from django.contrib.auth.decorators import login_required
 from rest_framework import status
 
 
 
-
-@api_view(['POST'])
+@api_view(['POST','GET'])
 def Login_view(request):
-    serializer = LoginSerializer(data=request.data)
-    if serializer.is_valid():
-        return Response({'message': 'Authentication successful'}, status=status.HTTP_200_OK)
+    if request.method == 'POST':
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            return Response({'message': 'Authentication successful','detail':request.data['username']}, status=status.HTTP_200_OK)
+        else:
+            print(request.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
-        print(request.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        username = request.headers.get('Authorization')
+        try:
+            # Try to retrieve the user based on the provided username
+            user = User.objects.get(username=username)
+            # Return the username or any specific information you want
+            return Response({'username': user.username}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            # If user is not found, return an error response
+            return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
 
 
 @api_view(['GET', 'POST'])

@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import './App.css';
 import Homepage from './HomePageComponents/homepage';
-import { BrowserRouter, Link, Route, Routes} from "react-router-dom";
+import { BrowserRouter, Route, Routes} from "react-router-dom";
 import Loginpage from './HomePageComponents/loginpage';
 import Signup from './HomePageComponents/signup';
+import Userportalpage from './UserPortalComps/userportal';
 
 
 function App() {
@@ -16,6 +16,7 @@ function App() {
           <Route path="/" element={<Homepage />} />
           <Route path="/login" element={<Loginpage />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/userportal" element={<Userportalpage />} />
         </Routes>
       </BrowserRouter>
     </div>

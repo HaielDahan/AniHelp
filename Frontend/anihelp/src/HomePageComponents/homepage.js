@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import React from 'react';
 import animals from '../photos/animals.jpg';
-import { BrowserRouter, Link, Route, Routes} from "react-router-dom";
 import Loginpage from './loginpage';
 import Signup from './signup';
 import './homepage.css';
-
 
 const styles = {
   backgroundImage: `url(${animals})`,
@@ -46,6 +44,8 @@ function Homepage() {
             {/* <Link to="signup">Sign up</Link> */}
           </div>
         </nav>
+        <nav>
+      </nav>
     </div>
   );
 }
