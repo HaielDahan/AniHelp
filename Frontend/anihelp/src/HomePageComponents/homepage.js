@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import React from 'react';
 import animals from '../photos/animals.jpg';
+import back from '../photos/back3.jpg';
 import Loginpage from './loginpage';
 import Signup from './signup';
 import './homepage.css';
 
 const styles = {
-  backgroundImage: `url(${animals})`,
+  backgroundImage: `url(${back})`,
   height: '100vh',
   backgroundSize: 'cover',
   backgroundPosition: 'center',

@@ -111,6 +111,10 @@ def Items_detail(request, name):
         item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+@api_view(['GET'])
+def get_category_options(request):
+    options = dict(Item._meta.get_field('category').choices)
+    return JsonResponse(options)
 
 
 # def Accounts_list(request):
