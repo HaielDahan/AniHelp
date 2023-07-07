@@ -60,24 +60,26 @@ def Accounts_list(request):
             return Response(seri_account.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def Accounts_detail(request, id):
+def Accounts_detail(request):
     try:
-        account = Account.objects.get(pk=id)
+        username = request.headers.get('Authorization')
+        user = User.objects.get(username=username)
+        account = Account.objects.get(pk=user.id)
     except:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         seri = Accountserializer(account)
-        return Response(seri.data)
+        return JsonResponse(dict(seri.data))
     elif request.method == 'PUT':
         seri = Accountserializer(account, data=request.data)
         print(seri.is_valid())
         if seri.is_valid():
             seri.save()
-            return Response(seri.data)
+            return JsonResponse(seri.data)
         return Response(seri.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'DELETE':
         account.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return JsonResponse(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET','POST'])
 def Items_list(request):

@@ -10,7 +10,6 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -60,6 +59,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 function Userportalpage() {
   const [user, setUser] = useState('');
+  const [personprofile, setPersonProfile] = useState([])
   const [anchorEl, setAnchorEl] = useState(null);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [ProfileanchorEl, setProfileanchorEl] = useState(null);
@@ -84,19 +84,17 @@ function Userportalpage() {
     axios.get('http://127.0.0.1:8000/myapp/category-options', {
     })
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         setCategoryOptions(res.data);
       })
       .catch(error => {
         console.error(error);
       });
-
-    // Fetch user data and set it in the state
-    // ...
   }, []);
     
 
   const navigate = useNavigate();
+  const profilenavigate = useNavigate();
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -110,9 +108,12 @@ function Userportalpage() {
     setProfileanchorEl(event.currentTarget);
   };
 
-  const handleProfileClose = () => {
-    setProfileanchorEl(null);
-  };
+
+const handleProfileClose = () => {
+  setProfileanchorEl(null);
+};
+
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -169,8 +170,8 @@ function Userportalpage() {
                 }}
                 open={Boolean(ProfileanchorEl)}
                 onClose={handleProfileClose}
-              >
-                <MenuItem onClick={handleProfileClose}>Profile</MenuItem>
+              > 
+                <MenuItem onClick={() => navigate('/profile')}>profile</MenuItem>
                 <MenuItem onClick={handleProfileClose}>My account</MenuItem>
                 <MenuItem onClick={() => navigate('/')}>Logout</MenuItem>
               </Menu>
@@ -195,32 +196,3 @@ function Userportalpage() {
 }
 
 export default Userportalpage;
-
-
-
-
-// function Userportalpage() {
-  // const [user, setUser] = useState('');
-
-  // useEffect(() => {
-  //   const authToken = localStorage.getItem('authToken');
-  //   console.log(authToken)
-  //   axios.get('http://127.0.0.1:8000/myapp/auth', {
-  //     headers: {
-  //       Authorization: `${authToken}`,
-  //     },
-  //   })
-  //     .then(res => {
-  //       setUser(res.data.username); // Set the username in the state variable
-  //     })
-  //     .catch(error => {
-  //       console.error(error);
-  //     });
-  // }, []);
-
-//   return (
-//     <div>
-//       <h1>Hello {user}</h1>
-//     </div>
-//   );
-// }

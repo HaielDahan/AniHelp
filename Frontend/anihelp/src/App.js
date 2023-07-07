@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes} from "react-router-dom";
 import Loginpage from './HomePageComponents/loginpage';
 import Signup from './HomePageComponents/signup';
 import Userportalpage from './UserPortalComps/userportal';
+import Profilepage from './UserPortalComps/profilepage';
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/login" element={<Loginpage />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/userportal" element={<Userportalpage />} />
+          <Route path="/profile" element = {<Profilepage />}/>
         </Routes>
       </BrowserRouter>
     </div>
