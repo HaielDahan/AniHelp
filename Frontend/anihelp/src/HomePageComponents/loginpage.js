@@ -8,15 +8,10 @@ import {TextField } from '@mui/material';
 
 
 
-function Loginpage({closeModal}) {
-  // const [data, setData] = useState([]);
-  // const [name, setName] = useState('');
-  // const [email, setEmail] = useState('');
-  // const [phone, setPhone] = useState('');
-  // const [userDetails, setUserDetails] = useState(null);
-  // let navigate = useNavigate();
-  
+function Loginpage({closeModal}) {  
   const[data, setData] = useState({username:'',password:''});
+  const[err_message, setErrMessage] = useState('');
+  const[err_flag, setErrFlag] = useState(false);
 
   let navigate = useNavigate();
 
@@ -24,13 +19,13 @@ function Loginpage({closeModal}) {
     event.preventDefault();
     axios.post('http://127.0.0.1:8000/myapp/auth', data)
       .then(response => {
-        console.log(response.data);
         const authToken = response.data['detail'];
         localStorage.setItem('authToken', authToken);
-        // Perform any necessary actions after successful login
-        navigate('/userportal'); // Navigate to the new page
+        navigate('/userportal');
       })
       .catch(error => {
+        setErrMessage('The username or password is incorrect!');
+        setErrFlag(true);
         console.error(error);
       });
   }
@@ -38,7 +33,6 @@ function Loginpage({closeModal}) {
   const handleChange = (e, myKey) =>{
     setData(prevdata=>({...prevdata, [myKey]:e.target.value}))    
   }
-  // useEffect(()=>{console.log(data)} ,[data])
     
   return (
     <div className='ModalBackground'>
@@ -58,6 +52,7 @@ function Loginpage({closeModal}) {
               style={{ position: "absolute", left: '37%', top: '50%', display: 'block', width: '50%' }}/>
               {/* <input type="email" placeholder="Enter your email" value={data.email} onChange={(e)=>{handleChange(e,'email')}} /> */}
             </label>
+            {err_flag && <p className="errorMessage">{err_message}</p>}
           <button className='submitBtn' type="submit">Submit</button>
         </form>
           <div className='cancelBtn'>

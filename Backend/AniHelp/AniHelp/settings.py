@@ -35,6 +35,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+APPEND_SLASH = False  # or False
+
 # Allow requests from any origin
 CORS_ORIGIN_ALLOW_ALL = True
 

@@ -12,7 +12,7 @@ from django.core import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from rest_framework import status
-
+from django.http import HttpResponse
 
 
 @api_view(['POST','GET'])
@@ -64,22 +64,25 @@ def Accounts_detail(request):
     try:
         username = request.headers.get('Authorization')
         user = User.objects.get(username=username)
-        account = Account.objects.get(pk=user.id)
+        account = Account.objects.get(user=user)
     except:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         seri = Accountserializer(account)
         return JsonResponse(dict(seri.data))
     elif request.method == 'PUT':
+        request.data['user'] = user.id
         seri = Accountserializer(account, data=request.data)
-        print(seri.is_valid())
         if seri.is_valid():
             seri.save()
             return JsonResponse(seri.data)
         return Response(seri.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'DELETE':
-        account.delete()
-        return JsonResponse(status=status.HTTP_204_NO_CONTENT)
+        try:
+            account.delete()
+            return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return HttpResponse(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET','POST'])
 def Items_list(request):

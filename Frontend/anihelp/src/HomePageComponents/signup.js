@@ -12,7 +12,9 @@ const Signup = ({closeSignUpModal}) =>{
                                   ,age:'',place:''
                                   ,prefix:'',phone:''});
 
-
+  const[err_message, setErrMessage] = useState('');
+  const[err_flag, setErrFlag] = useState(false);
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     axios.post('http://127.0.0.1:8000/myapp/accounts', data)

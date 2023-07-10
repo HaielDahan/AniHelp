@@ -11,7 +11,7 @@
     width: 850px;
     height: 600px;
     border-radius: 12px;
-    background-color: rgba(188, 206, 232, 0.838);
+    background-color: rgba(188, 228, 232, 0.907);
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     position: fixed;
     top: 50%;
@@ -54,5 +54,12 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-bottom: 10px;
+  }
+  .errorMessage {
+    position: absolute;
+    top: 425px; /* Adjust the top position as needed */
+    left: 50%; /* Adjust the left position as needed */
+    transform: translateX(-50%);
+    color: red;
   }
   
