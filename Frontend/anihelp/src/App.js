@@ -5,6 +5,8 @@ import Loginpage from './HomePageComponents/loginpage';
 import Signup from './HomePageComponents/signup';
 import Userportalpage from './UserPortalComps/userportal';
 import Profilepage from './UserPortalComps/profilepage';
+import Account from './UserPortalComps/account';
+import About from './HomePageComponents/about';
 
 
 function App() {
@@ -19,6 +21,8 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/userportal" element={<Userportalpage />} />
           <Route path="/profile" element = {<Profilepage />}/>
+          <Route path="/Myaccount" element = {<Account />}/>
+          <Route path="/about" element = {<About />}/>
         </Routes>
       </BrowserRouter>
     </div>

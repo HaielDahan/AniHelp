@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import React from 'react';
-import animals from '../photos/animals.jpg';
 import back from '../photos/back3.jpg';
 import Loginpage from './loginpage';
 import Signup from './signup';
 import './homepage.css';
+import { useNavigate } from 'react-router-dom';
 
 const styles = {
   backgroundImage: `url(${back})`,
@@ -13,11 +13,12 @@ const styles = {
   backgroundPosition: 'center',
 };
 
+
 function Homepage() {
   const [openModal, setOpenModal] = useState(false);
   const [openSignUpModal, setopenSignUpModal] = useState(false);
 
-
+  const navigate = useNavigate();
   const handleLoginButtonClick = () => {
     setOpenModal(true);
     setopenSignUpModal(false);
@@ -27,7 +28,7 @@ function Homepage() {
     setOpenModal(false);
     setopenSignUpModal(true);
   }
-
+ 
   return (
     <div style={styles} className="container">
       <h1 className='display-1 position-absolute top-0 start-50 translate-middle-x'>AniHelp</h1>
@@ -43,6 +44,11 @@ function Homepage() {
           <button className="openSignUpModal" onClick={handleSignupButtonClick}>Sign up</button>
           {openSignUpModal && <Signup closeSignUpModal= {setopenSignUpModal}/>} 
             {/* <Link to="signup">Sign up</Link> */}
+          </div>
+        </nav>
+        <nav className='position-absolute top-0 end-0 w-20'>
+        <div>
+           <button className="AboutBtn" onClick={() => navigate('/about')}>About</button>
           </div>
         </nav>
         <nav>

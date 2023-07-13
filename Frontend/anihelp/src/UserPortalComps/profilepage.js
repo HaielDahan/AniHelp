@@ -1,6 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import back from '../photos/back3.jpg';
+import NavbarOption from './navbar';
+import { Navbar } from 'react-bootstrap';
+const styles = {
+  container: {
+    position: 'relative',
+    height: '100vh',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)', // Adjust the alpha value as needed
+  },
+  background: {
+    position: 'absolute',
+    top: 0,
+    left: 250,
+    width: '70%',
+    height: '100%',
+    backgroundImage: `url(${back})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    opacity: 0.5, // Adjust the opacity value as needed
+  },
+};
+
 
 function Profilepage() {
   const [personprofile, setPersonProfile] = useState({});
@@ -28,6 +50,9 @@ function Profilepage() {
 
   const handleEdit = () => {
     setIsEditing(true);
+  };
+  const handleCancelEdit = () => {
+    setIsEditing(false);
   };
 
   const handleFieldChange = (field, value) => {
@@ -87,8 +112,11 @@ function Profilepage() {
 
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div>
+      <NavbarOption/>
+      <div style={{ dislay: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <h1>{titlename}</h1>
+      <ul>
       <p>
         Name: {isEditing ? (
           <input
@@ -100,6 +128,8 @@ function Profilepage() {
           personprofile.name
         )}
       </p>
+      </ul>
+      <ul>
       <p>
         Gender: {isEditing ? (
           <input
@@ -111,6 +141,8 @@ function Profilepage() {
           personprofile.gender
         )}
       </p>
+      </ul>
+      <ul>
       <p>
         Age: {isEditing ? (
           <input
@@ -122,6 +154,8 @@ function Profilepage() {
           personprofile.age
         )}
       </p>
+      </ul>
+      <ul>
       <p>
         Residence: {isEditing ? (
           <input
@@ -133,6 +167,8 @@ function Profilepage() {
           personprofile.place
         )}
       </p>
+      </ul>
+      <ul>
       <p>
         Phone number: {isEditing ? (
           <>
@@ -151,14 +187,20 @@ function Profilepage() {
           personprofile.prefix + personprofile.phone
         )}
       </p>
+      </ul>
       {isEditing ? (
+        <>
         <button onClick={handleSave}>Save</button>
+        <button onClick={handleCancelEdit}>cancel</button>
+        </>
       ) : (
         <>
         <button onClick={handleEdit}>Edit</button>
         <button onClick={handleDelete}>Delete</button>
+        <button onClick={() => navigate('/userportal')}>Back</button>
         </>
       )}
+      </div>
     </div>
   );
 }

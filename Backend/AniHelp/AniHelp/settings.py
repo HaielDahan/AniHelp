@@ -37,6 +37,9 @@ ALLOWED_HOSTS = []
 
 APPEND_SLASH = False  # or False
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 # Allow requests from any origin
 CORS_ORIGIN_ALLOW_ALL = True
 

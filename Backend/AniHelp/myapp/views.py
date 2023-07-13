@@ -7,13 +7,15 @@ from .models import Account, Item
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.request import Request
+
 # Create your views here.
 from django.core import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from rest_framework import status
 from django.http import HttpResponse
-
+from django.core.files.storage import default_storage
 
 @api_view(['POST','GET'])
 def Login_view(request):
@@ -86,35 +88,111 @@ def Accounts_detail(request):
 
 @api_view(['GET','POST'])
 def Items_list(request):
+    username = request.headers.get('Authorization')
+    user = User.objects.get(username=username)
+    account = Account.objects.get(user=user)
     if request.method=='POST':
         seri = Itemsserializer(data=request.data)
         if seri.is_valid():
             seri.save()
             return Response(seri.data, status=status.HTTP_201_CREATED)
     if request.method =='GET':
-        items = Item.objects.all()
+        # items = Item.objects.all()
+        items = account.items.all()
         seri = Itemsserializer(items, many=True)
         return Response(seri.data)
 
 
+
 @api_view(['GET', 'PUT', 'DELETE'])
-def Items_detail(request, name):
+def Items_detail(request):
     try:
-        item = Item.objects.get(item_name=name)
+        if request.method == 'GET':
+            items = Item.objects.all()
+            data = [
+                {
+                    'id': item.id,
+                    'item_name': item.item_name,
+                    'size': item.size,
+                    'animal': item.animal,
+                    'category': item.category,
+                    'description': item.description,
+                    'image': item.image,
+                }
+                for item in items
+            ]
+            return JsonResponse(data, safe=False)
+        elif request.method == 'DELETE':
+            item_id = request.data['items']
+            try:
+                for id in item_id:
+                    item = Item.objects.get(id=id)
+                    if item.image:
+                        default_storage.delete(item.image.path)
+                    item.delete()
+                return HttpResponse(status=204)
+            except Item.DoesNotExist:
+                return HttpResponse(status=404)
+        else:
+            return HttpResponse(status=400)
     except:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    if request.method == 'GET':
-        seri = Itemsserializer(item)
-        return Response(seri.data)
-    elif request.method == 'PUT':
-        seri = Itemsserializer(item, data=request.data)
-        if seri.is_valid():
-            seri.save()
-            return Response(seri.data)
-        return Response(seri.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
-        item.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return HttpResponse(status=500)
+
+
+
+# def Items_detail(request):
+#     try:
+#         items = Item.objects.all()  # Replace `Item` with your actual model name
+#         data = [
+#             {
+#                 'id': item.id,
+#                 'item_name': item.item_name,
+#                 'size': item.size,
+#                 'animal': item.animal,
+#                 'category': item.category,
+#                 'description': item.description,
+#                 'image': item.image,
+#             }
+#             for item in items
+#         ]
+#         return Response(data)  # Return a JSON response with the item data
+#     except:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+    # if request.method == 'GET':
+    #     seri = Itemsserializer(item)
+    #     return Response(seri.data)
+    # elif request.method == 'PUT':
+    #     seri = Itemsserializer(item, data=request.data)
+    #     if seri.is_valid():
+    #         seri.save()
+    #         return Response(seri.data)
+    #     return Response(seri.errors, status=status.HTTP_400_BAD_REQUEST)
+    # elif request.method == 'DELETE':
+    #     item.delete()
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+
+# @api_view(['GET', 'PUT', 'DELETE'])
+# def Items_detail(request, name):
+#     try:
+#         item = Item.objects.get(item_name=name)
+#     except:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+#     if request.method == 'GET':
+#         seri = Itemsserializer(item)
+#         return Response(seri.data)
+#     elif request.method == 'PUT':
+#         seri = Itemsserializer(item, data=request.data)
+#         if seri.is_valid():
+#             seri.save()
+#             return Response(seri.data)
+#         return Response(seri.errors, status=status.HTTP_400_BAD_REQUEST)
+#     elif request.method == 'DELETE':
+#         item.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET'])
 def get_category_options(request):

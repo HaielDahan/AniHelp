@@ -27,7 +27,7 @@ class Accountserializer(serializers.ModelSerializer):
 class Itemsserializer(serializers.ModelSerializer):
     class Meta:
         model = Item
-        fields = ['item_name', 'size', 'animal', 'category', 'description', 'image']
+        fields = ['id','item_name', 'size', 'animal', 'category', 'description', 'image']
 
 
 class RegisterSerializer(serializers.ModelSerializer):
