@@ -27,7 +27,11 @@ class Accountserializer(serializers.ModelSerializer):
 class Itemsserializer(serializers.ModelSerializer):
     class Meta:
         model = Item
-        fields = ['id','item_name', 'size', 'animal', 'category', 'description', 'image']
+        fields = ['id', 'item_name', 'size', 'animal', 'category', 'description', 'image']
+        # extra_kwargs = {
+        #     'image': {'required': False}
+        # }
+
 
 
 class RegisterSerializer(serializers.ModelSerializer):

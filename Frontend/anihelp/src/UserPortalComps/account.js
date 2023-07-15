@@ -29,6 +29,7 @@ import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SaveIcon from '@mui/icons-material/Save';
+import "./account.css"; 
 /// ****It will remain for me to arrange the addition of products and editing of products and correct the sorting*****
 
 function descendingComparator(a, b, orderBy) {
@@ -158,7 +159,7 @@ EnhancedTableHead.propTypes = {
 function EnhancedTableToolbar(props) {
   const { numSelected , itemsfordelete } = props;
   const handleDelete = async () => {
-    const confirmed = window.confirm('Are you sure you want to delete the profile?');
+    const confirmed = window.confirm('Are you sure you want to delete this item?');
     if (confirmed) {
       try {
         const authToken = localStorage.getItem('authToken');
@@ -171,8 +172,7 @@ function EnhancedTableToolbar(props) {
           },
         });
         if (response.status === 204) {
-          console.log(response.data);
-          // navigate('/');
+          window.location.reload();
         } else {
           throw new Error('Failed to delete the profile');
         }
@@ -183,10 +183,10 @@ function EnhancedTableToolbar(props) {
   };
   
 
-  const handleEdit = () => {
+  const handleAdd = () => {
     // Perform delete operation
     
-    console.log('Edit clicked');
+    console.log('add clicked');
   };
   return (
     <Toolbar
@@ -233,7 +233,7 @@ function EnhancedTableToolbar(props) {
         </Tooltip>
       )}
       <Tooltip title="Add">
-        <IconButton onClick={handleEdit}>
+        <IconButton onClick={handleAdd}>
         <AddIcon />
         </IconButton>
       </Tooltip>
@@ -257,6 +257,8 @@ export default function EnhancedTable() {
   const [itemsForDelete, setItemsForDelete] = useState([]);
   const [editingCells, setEditingCells] = useState({});
   const [originalValues, setOriginalValues] = useState({});
+  const [savebuttom, setSaveButtom] = useState(false)
+
 
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
@@ -335,7 +337,10 @@ export default function EnhancedTable() {
   const handleChangeDense = (event) => {
     setDense(event.target.checked);
   };
-
+  useEffect(() => {
+    console.log(originalValues); // Log the value of originalValues
+    // ...
+  }, [originalValues]);
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
   const emptyRows =
@@ -350,7 +355,7 @@ export default function EnhancedTable() {
     const updatedEditingCells = { ...editingCells };
     updatedEditingCells[id] = true;
     setEditingCells(updatedEditingCells);
-
+  
     // Store the original values of the edited cells
     const editedRow = visibleRows.find((row) => row.id === id);
     const originalRowValues = {
@@ -359,12 +364,45 @@ export default function EnhancedTable() {
       animal: editedRow.animal,
       category: editedRow.category,
       description: editedRow.description,
+      image: editedRow.image,
     };
     setOriginalValues((prevOriginalValues) => ({
       ...prevOriginalValues,
       [id]: originalRowValues,
     }));
   };
+  
+  const handleSaveRow = (id) => {
+    const confirmed = window.confirm('Are you sure you want to save the changes?');
+      if (confirmed) {
+        const updatedItem = items.find((item) => item.id === id);
+      if (updatedItem) {
+        console.log('Updated Item:', updatedItem);
+          const handleEditReq = async () => {
+            try {
+              const authToken = localStorage.getItem('authToken');
+              const response = await axios.put('http://127.0.0.1:8000/myapp/item', {
+                headers: {
+                  Authorization: authToken,
+                },
+                data: {
+                  items: updatedItem,
+                },
+              });
+              if (response.status === 204) {
+                  window.location.reload();
+              } else {
+                throw new Error('Failed to change this item');
+              }
+            } catch (error) {
+              console.error(error);
+            }
+          };
+          handleEditReq();
+        }
+      }
+  };
+  
 
   const handleExitEdit = (id) => {
     const updatedEditingCells = { ...editingCells };
@@ -388,6 +426,9 @@ export default function EnhancedTable() {
     );
     setItems(updatedItems);
   };
+  // useEffect(()=>{
+  //   console.log(originalValues)
+  // },[originalValues])
 
   return (
     <div>
@@ -507,14 +548,20 @@ export default function EnhancedTable() {
                           row.description
                         )}
                       </TableCell>
-                      <TableCell align="right">{row.image}</TableCell>
+                      <TableCell align="right">
+                      {editingCells[row.id] ? (
+                          <input type="file" accept="image/*"  onChange={(e) => handleCellChange(e, row.id)} />
+                        ) : (
+                          <img src={`http://127.0.0.1:8000${row.image}`} alt="img" className="small-image"/>
+                        )}
+                        </TableCell>
                       <TableCell align="right">
                         {editingCells[row.id] ? (
                           <>
                             <IconButton onClick={() => handleExitEdit(row.id)}>
                               <CancelIcon />
                             </IconButton>
-                            <IconButton onClick={() => handleEditRow(row.id)}>
+                            <IconButton onClick={() => handleSaveRow(row.id)}>
                               <SaveIcon />
                             </IconButton>
                           </>
@@ -533,7 +580,7 @@ export default function EnhancedTable() {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[5, 10, 15]}
             component="div"
             count={items.length}
             rowsPerPage={rowsPerPage}

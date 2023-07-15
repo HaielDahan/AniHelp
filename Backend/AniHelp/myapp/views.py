@@ -133,6 +133,15 @@ def Items_detail(request):
                 return HttpResponse(status=204)
             except Item.DoesNotExist:
                 return HttpResponse(status=404)
+        elif request.method == 'PUT':
+            item_id = request.data['data']['items']
+            print("item:",item_id)
+            item = Item.objects.get(id=item_id['id'])
+            serializer = Itemsserializer(item, data=item_id)
+            if serializer.is_valid():
+                serializer.save()
+                return HttpResponse(status=204)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return HttpResponse(status=400)
     except:
