@@ -16,6 +16,7 @@ from django.contrib.auth.decorators import login_required
 from rest_framework import status
 from django.http import HttpResponse
 from django.core.files.storage import default_storage
+import os
 
 @api_view(['POST','GET'])
 def Login_view(request):
@@ -134,10 +135,34 @@ def Items_detail(request):
             except Item.DoesNotExist:
                 return HttpResponse(status=404)
         elif request.method == 'PUT':
-            item_id = request.data['data']['items']
-            print("item:",item_id)
-            item = Item.objects.get(id=item_id['id'])
-            serializer = Itemsserializer(item, data=item_id)
+            item = Item.objects.get(id=request.data.get('id'))
+            # Process the image file
+            new_item = {}
+            for req_key in request.data:
+                value = request.data.get(req_key)
+                new_item.update({req_key:value})
+
+            if(str(new_item['image']).startswith('/media/item_images')):
+                new_item['image'] = item.image
+            elif str(new_item['image']) == 'undefined' or  str(new_item['image']) == 'null':
+                # old_image_path = item.image.path if item.image else None
+                # print(old_image_path)
+                new_item['image'] = None
+            else:
+                old_image_path = item.image.path if item.image else None
+                file_path = save_uploaded_image(new_item['image'], str(new_item['image']))
+                item.image = file_path
+                new_item['image'] = item.image
+                item.save()
+                print(old_image_path)
+                if old_image_path:
+                    try:
+                        os.remove(old_image_path)
+                    except OSError:
+                        pass
+
+            print(new_item)
+            serializer = Itemsserializer(item, data=new_item)
             if serializer.is_valid():
                 serializer.save()
                 return HttpResponse(status=204)
@@ -148,6 +173,11 @@ def Items_detail(request):
         return HttpResponse(status=500)
 
 
+
+def save_uploaded_image(image_file, filename):
+    # Save the image file to the media folder
+    filepath = default_storage.save(f'item_images/{filename}', image_file)
+    return filepath
 
 # def Items_detail(request):
 #     try:
@@ -227,3 +257,28 @@ def get_category_options(request):
 #
 #     return render(request, 'create_account.html', {'form': form})
 
+# print("req:",new_item)
+# image_file = request.data.get('image')
+# print(image_file)
+# # Get the filename from the image_file object (assuming it's a File object)
+# if(image_file.name):
+#     image_filename = image_file.name
+# print("------ i am here:", image_filename)
+# if str(request.data.get('image')).lower()  != 'undefined':
+#     print("------ i am here2:", request.data.get('image'))
+#         #and request.data.get('image')!= None:
+#     if image_file.name.startswith('media/item_images/'):
+#     # if  request.data.get('image')[:18] == '/media/item_images':
+#         print("------ i am here3:", request.data.get('image'))
+#         new_item['image'] = item.image
+#     else:
+#         image_file = request.data.get('image')
+#         image_filename = str(image_file)
+#         file_path = save_uploaded_image(image_file, image_filename)
+#         # item.image = file_path
+#         item.image = file_path
+#         new_item['image'] = item.image
+#         item.save()
+# #
+# else:
+#     new_item['image'] = None

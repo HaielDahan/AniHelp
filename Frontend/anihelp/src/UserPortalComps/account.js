@@ -157,7 +157,7 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected , itemsfordelete } = props;
+  const { numSelected, itemsfordelete, onAddClick } = props;
   const handleDelete = async () => {
     const confirmed = window.confirm('Are you sure you want to delete this item?');
     if (confirmed) {
@@ -184,9 +184,10 @@ function EnhancedTableToolbar(props) {
   
 
   const handleAdd = () => {
-    // Perform delete operation
-    
-    console.log('add clicked');
+    // Call the onAddClick callback from props
+    if (onAddClick) {
+      onAddClick();
+    }
   };
   return (
     <Toolbar
@@ -257,8 +258,45 @@ export default function EnhancedTable() {
   const [itemsForDelete, setItemsForDelete] = useState([]);
   const [editingCells, setEditingCells] = useState({});
   const [originalValues, setOriginalValues] = useState({});
-  const [savebuttom, setSaveButtom] = useState(false)
+  const [file, setFile] = useState();
 
+  const [newProduct, setNewProduct] = useState({
+    // item_name: '',
+    // size: '',
+    // animal: '',
+    // category: '',
+    // description: '',
+    // image: '',
+  });
+
+  const handleAdd = () => {
+    // Reset newProduct state to represent a new row
+    setNewProduct({
+      item_name: '',
+      size: '',
+      animal: '',
+      category: '',
+      description: '',
+      image: '',
+    });
+  };
+
+  const handleSaveNewProduct = () => {
+    // Add the new product data to the items array
+    const newProductWithId = { ...newProduct, id: generateUniqueId() };
+    setItems((prevItems) => [newProductWithId, ...prevItems]);
+    setNewProduct({}); // Reset newProduct state
+  };
+
+  const handleCancelAdd = () => {
+    // Reset newProduct state to remove the new row
+    setNewProduct({});
+  };
+
+  // Generate a unique ID for the new product
+  const generateUniqueId = () => {
+    return Math.floor(Math.random() * 100000);
+  };
 
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
@@ -294,6 +332,7 @@ export default function EnhancedTable() {
       setItemsForDelete([]); // Clear the itemsForDelete array
     }
   };
+  
 
   const handleClick = (event, id) => {
     const selectedIndex = selected.indexOf(id);
@@ -323,6 +362,8 @@ export default function EnhancedTable() {
     }
 
     setSelected(newSelected);
+    // console.log('Selected:', newSelected);
+    // console.log('Items For Delete:', itemsForDelete);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -371,37 +412,82 @@ export default function EnhancedTable() {
       [id]: originalRowValues,
     }));
   };
-  
+
   const handleSaveRow = (id) => {
     const confirmed = window.confirm('Are you sure you want to save the changes?');
-      if (confirmed) {
-        const updatedItem = items.find((item) => item.id === id);
+    if (confirmed) {
+      const updatedItem = items.find((item) => item.id === id);
       if (updatedItem) {
-        console.log('Updated Item:', updatedItem);
-          const handleEditReq = async () => {
-            try {
-              const authToken = localStorage.getItem('authToken');
-              const response = await axios.put('http://127.0.0.1:8000/myapp/item', {
-                headers: {
-                  Authorization: authToken,
-                },
-                data: {
-                  items: updatedItem,
-                },
-              });
-              if (response.status === 204) {
-                  window.location.reload();
-              } else {
-                throw new Error('Failed to change this item');
-              }
-            } catch (error) {
-              console.error(error);
-            }
-          };
-          handleEditReq();
-        }
+        const formData = new FormData();
+        formData.append('id', id); // Append the 'id' directly
+  
+        formData.append('item_name', updatedItem.item_name);
+        formData.append('size', updatedItem.size);
+        formData.append('animal', updatedItem.animal);
+        formData.append('category', updatedItem.category);
+        formData.append('description', updatedItem.description);
+         // Append the 'image' data properly
+      if (file) {
+        formData.append('image', file, file.name);
+      } else {
+        formData.append('image', updatedItem.image); // Send 'null' to the server if there's no new image
       }
+  
+        const authToken = localStorage.getItem('authToken');
+        axios
+          .put(`http://127.0.0.1:8000/myapp/item`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: authToken,
+            },
+          })
+          .then((response) => {
+            if (response.status === 204) {
+              window.location.reload();
+            } else {
+              throw new Error('Failed to change this item');
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    }
   };
+  
+  
+
+
+  // const handleSaveRow = (id) => {
+  //   const confirmed = window.confirm('Are you sure you want to save the changes?');
+  //     if (confirmed) {
+  //       const updatedItem = items.find((item) => item.id === id);
+  //     if (updatedItem) {
+  //       console.log('Updated Item:', updatedItem);
+  //         const handleEditReq = async () => {
+  //           try {
+  //             const authToken = localStorage.getItem('authToken');
+  //             const response = await axios.put('http://127.0.0.1:8000/myapp/item', {
+  //               headers: {
+  //                 Authorization: authToken,
+  //               },
+  //               data: {
+  //                 items: updatedItem,
+  //               },
+  //             });
+  //             if (response.status === 204) {
+  //                 window.location.reload();
+  //             } else {
+  //               throw new Error('Failed to change this item');
+  //             }
+  //           } catch (error) {
+  //             console.error(error);
+  //           }
+  //         };
+  //         handleEditReq();
+  //       }
+  //     }
+  // };
   
 
   const handleExitEdit = (id) => {
@@ -419,183 +505,265 @@ export default function EnhancedTable() {
     }
   };
 
+  // const handleCellChange = (event, id) => {
+  //   const { name, value, files } = event.target;
+  //   const updatedItems = items.map((item) =>
+  //     item.id === id ? { ...item, [name]: value || files[0] } : item
+  //   );
+  //   setItems(updatedItems);
+  // };
+
+
   const handleCellChange = (event, id) => {
-    const { name, value } = event.target;
+    const { name, value, files } = event.target;
     const updatedItems = items.map((item) =>
-      item.id === id ? { ...item, [name]: value } : item
+      item.id === id ? { ...item, [name]: value } : item // Spread the entire item object
     );
     setItems(updatedItems);
+    // Update the 'file' state only if a new image is selected
+    if (files && files.length > 0) {
+      setFile(files[0]);
+    }
   };
-  // useEffect(()=>{
-  //   console.log(originalValues)
-  // },[originalValues])
+  
+  
+  
+  
+  
+ useEffect(()=>{
+   console.log("i am here:",file)
+ },[file])
 
-  return (
-    <div>
-      <NavbarOption />
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '10vh',
-        }}
-      >
-        <h1>Personal Area</h1>
-      </Box>
-      <Box sx={{ width: '100%' }}>
-        <Paper sx={{ width: '100%', mb: 2 }}>
-          <EnhancedTableToolbar
-            numSelected={selected.length}
-            itemsfordelete={itemsForDelete}
-          />
-          <TableContainer>
-            <Table
-              sx={{ minWidth: 750 }}
-              aria-labelledby="tableTitle"
-              size={dense ? 'small' : 'medium'}
-            >
-              <EnhancedTableHead
-                numSelected={selected.length}
-                order={order}
-                orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
-                onRequestSort={handleRequestSort}
-                rowCount={items.length}
-              />
-              <TableBody>
-                {visibleRows.map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.id}
-                      selected={isItemSelected}
-                      sx={{ cursor: 'pointer' }}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        {editingCells[row.id] ? (
-                          <TextField
-                            name="item_name"
-                            value={row.item_name}
-                            onChange={(event) => handleCellChange(event, row.id)}
-                          />
-                        ) : (
-                          row.item_name
-                        )}
-                      </TableCell>
-                      <TableCell align="right">
-                        {editingCells[row.id] ? (
-                          <TextField
-                            name="size"
-                            value={row.size}
-                            onChange={(event) => handleCellChange(event, row.id)}
-                          />
-                        ) : (
-                          row.size
-                        )}
-                      </TableCell>
-                      <TableCell align="right">
-                        {editingCells[row.id] ? (
-                          <TextField
-                            name="animal"
-                            value={row.animal}
-                            onChange={(event) => handleCellChange(event, row.id)}
-                          />
-                        ) : (
-                          row.animal
-                        )}
-                      </TableCell>
-                      <TableCell align="right">
-                        {editingCells[row.id] ? (
-                          <TextField
-                            name="category"
-                            value={row.category}
-                            onChange={(event) => handleCellChange(event, row.id)}
-                          />
-                        ) : (
-                          row.category
-                        )}
-                      </TableCell>
-                      <TableCell align="right">
-                        {editingCells[row.id] ? (
-                          <TextField
-                            name="description"
-                            value={row.description}
-                            onChange={(event) => handleCellChange(event, row.id)}
-                          />
-                        ) : (
-                          row.description
-                        )}
-                      </TableCell>
-                      <TableCell align="right">
-                      {editingCells[row.id] ? (
-                          <input type="file" accept="image/*"  onChange={(e) => handleCellChange(e, row.id)} />
-                        ) : (
-                          <img src={`http://127.0.0.1:8000${row.image}`} alt="img" className="small-image"/>
-                        )}
-                        </TableCell>
-                      <TableCell align="right">
-                        {editingCells[row.id] ? (
-                          <>
-                            <IconButton onClick={() => handleExitEdit(row.id)}>
-                              <CancelIcon />
-                            </IconButton>
-                            <IconButton onClick={() => handleSaveRow(row.id)}>
-                              <SaveIcon />
-                            </IconButton>
-                          </>
-                        ) : (
-                          isItemSelected && (
-                            <IconButton onClick={() => handleEditRow(row.id)}>
-                              <EditIcon />
-                            </IconButton>
-                          )
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 15]}
-            component="div"
-            count={items.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Paper>
-        <FormControlLabel
-          control={<Switch checked={dense} onChange={handleChangeDense} />}
-          label="Dense padding"
+return (
+  <div>
+    <NavbarOption />
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '10vh',
+      }}
+    >
+      <h1>Personal Area</h1>
+    </Box>
+    <Box sx={{ width: '100%' }}>
+      <Paper sx={{ width: '100%', mb: 2 }}>
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          itemsfordelete={itemsForDelete}
+          onAddClick={handleAdd}// Pass the handleAdd function to the toolbar
         />
-      </Box>
-    </div>
-  );
+        <TableContainer>
+          <Table
+            sx={{ minWidth: 750 }}
+            aria-labelledby="tableTitle"
+            size={dense ? 'small' : 'medium'}
+          >
+            <EnhancedTableHead
+              numSelected={selected.length}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={handleSelectAllClick}
+              onRequestSort={handleRequestSort}
+              rowCount={items.length}
+            />
+            <TableBody>
+              {/* Render the new row with input fields */}
+              {Object.keys(newProduct).length > 0 && (
+                <TableRow>
+                  <TableCell padding="checkbox" />
+                  <TableCell>
+                    <TextField
+                      name="item_name"
+                      value={newProduct.item_name}
+                      onChange={(event) => setNewProduct({ ...newProduct, item_name: event.target.value })}
+                    />
+                  </TableCell>
+                  <TableCell align="right">
+                    <TextField
+                      name="size"
+                      value={newProduct.size}
+                      onChange={(event) => setNewProduct({ ...newProduct, size: event.target.value })}
+                    />
+                  </TableCell>
+                  <TableCell align="right">
+                    <TextField
+                      name="animal"
+                      value={newProduct.animal}
+                      onChange={(event) => setNewProduct({ ...newProduct, animal: event.target.value })}
+                    />
+                  </TableCell>
+                  <TableCell align="right">
+                    <TextField
+                      name="category"
+                      value={newProduct.category}
+                      onChange={(event) => setNewProduct({ ...newProduct, category: event.target.value })}
+                    />
+                  </TableCell>
+                  <TableCell align="right">
+                    <TextField
+                      name="description"
+                      value={newProduct.description}
+                      onChange={(event) => setNewProduct({ ...newProduct, description: event.target.value })}
+                    />
+                  </TableCell>
+                  <TableCell align="right">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(event) => setNewProduct({ ...newProduct, image: event.target.files[0] })}
+                    />
+                  </TableCell>
+                  <TableCell align="right">
+                    <IconButton onClick={handleCancelAdd}>
+                      <CancelIcon />
+                    </IconButton>
+                    <IconButton onClick={handleSaveNewProduct}>
+                      <SaveIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              )}
+
+              {/* Render the existing rows */}
+              {visibleRows.map((row, index) => (
+                <TableRow
+                  hover
+                  onClick={(event) => handleClick(event, row.id)}
+                  role="checkbox"
+                  aria-checked={isSelected(row.id)}
+                  tabIndex={-1}
+                  key={row.id}
+                  selected={isSelected(row.id)}
+                  sx={{ cursor: 'pointer' }}
+                >
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      color="primary"
+                      checked={isSelected(row.id)}
+                      inputProps={{
+                        'aria-labelledby': `enhanced-table-checkbox-${index}`,
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell
+                    component="th"
+                    id={`enhanced-table-checkbox-${index}`}
+                    scope="row"
+                    padding="none"
+                  >
+                    {editingCells[row.id] ? (
+                      <TextField
+                        name="item_name"
+                        value={row.item_name}
+                        onChange={(event) => handleCellChange(event, row.id)}
+                      />
+                    ) : (
+                      row.item_name
+                    )}
+                  </TableCell>
+                  <TableCell align="right">
+                    {editingCells[row.id] ? (
+                      <TextField
+                        name="size"
+                        value={row.size}
+                        onChange={(event) => handleCellChange(event, row.id)}
+                      />
+                    ) : (
+                      row.size
+                    )}
+                  </TableCell>
+                  <TableCell align="right">
+                    {editingCells[row.id] ? (
+                      <TextField
+                        name="animal"
+                        value={row.animal}
+                        onChange={(event) => handleCellChange(event, row.id)}
+                      />
+                    ) : (
+                      row.animal
+                    )}
+                  </TableCell>
+                  <TableCell align="right">
+                    {editingCells[row.id] ? (
+                      <TextField
+                        name="category"
+                        value={row.category}
+                        onChange={(event) => handleCellChange(event, row.id)}
+                      />
+                    ) : (
+                      row.category
+                    )}
+                  </TableCell>
+                  <TableCell align="right">
+                    {editingCells[row.id] ? (
+                      <TextField
+                        name="description"
+                        value={row.description}
+                        onChange={(event) => handleCellChange(event, row.id)}
+                      />
+                    ) : (
+                      row.description
+                    )}
+                  </TableCell>
+                  <TableCell align="right">
+                    {editingCells[row.id] ? (
+                      <>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleCellChange(e, row.id)}
+                        />
+                      </>
+                    ) : (
+                      <img
+                        src={`http://127.0.0.1:8000${row.image}`}
+                        alt="img"
+                        className="small-image"
+                      />
+                    )}
+                  </TableCell>
+                  <TableCell align="right">
+                    {editingCells[row.id] ? (
+                      <>
+                        <IconButton onClick={() => handleExitEdit(row.id)}>
+                          <CancelIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleSaveRow(row.id)}>
+                          <SaveIcon />
+                        </IconButton>
+                      </>
+                    ) : (
+                      isSelected(row.id) && (
+                        <IconButton onClick={() => handleEditRow(row.id)}>
+                          <EditIcon />
+                        </IconButton>
+                      )
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 15]}
+          component="div"
+          count={items.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
+      <FormControlLabel
+        control={<Switch checked={dense} onChange={handleChangeDense} />}
+        label="Dense padding"
+      />
+    </Box>
+  </div>
+);
 }
 
 
