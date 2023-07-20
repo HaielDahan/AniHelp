@@ -29,7 +29,14 @@ import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SaveIcon from '@mui/icons-material/Save';
-import "./account.css"; 
+import "./account.css";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  // other Material-UI imports...
+} from '@mui/material';  
 /// ****It will remain for me to arrange the addition of products and editing of products and correct the sorting*****
 
 function descendingComparator(a, b, orderBy) {
@@ -259,6 +266,10 @@ export default function EnhancedTable() {
   const [editingCells, setEditingCells] = useState({});
   const [originalValues, setOriginalValues] = useState({});
   const [file, setFile] = useState();
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [animalOptions, setAnimalOptions] = useState([]);
+  const [sizeOptions, setSizeOptions] = useState([]);
+  
 
   const [newProduct, setNewProduct] = useState({
     // item_name: '',
@@ -544,7 +555,42 @@ export default function EnhancedTable() {
   };
   
   
-  
+  useEffect(() => {
+    axios.get('http://127.0.0.1:8000/myapp/category-options', {
+    })
+      .then(res => {
+        // console.log(res.data)
+        setCategoryOptions(res.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios.get('http://127.0.0.1:8000/myapp/animals-options/', {
+    })
+      .then(res => {
+        // console.log("animal:",res.data)
+        setAnimalOptions(res.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
+
+
+  useEffect(() => {
+    axios.get('http://127.0.0.1:8000/myapp/size-options/', {
+    })
+      .then(res => {
+        // console.log(res.data)
+        setSizeOptions(res.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
   
   
 // useEffect(()=>{
@@ -682,33 +728,66 @@ return (
                   </TableCell>
                   <TableCell align="right">
                     {editingCells[row.id] ? (
-                      <TextField
-                        name="size"
-                        value={row.size}
-                        onChange={(event) => handleCellChange(event, row.id)}
-                      />
+                        <FormControl fullWidth variant="outlined">
+                        <InputLabel id={`size-label-${row.id}`}>Size</InputLabel>
+                        <Select
+                          labelId={`size-label-${row.id}`}
+                          name="size"
+                          value={row.size}
+                          onChange={(event) => handleCellChange(event, row.id)}
+                          label="size"
+                        >
+                          {Object.entries(sizeOptions).map(([key, value]) => (
+                          <MenuItem key={key} value={value}>
+                          {value}
+                          </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     ) : (
                       row.size
                     )}
                   </TableCell>
                   <TableCell align="right">
                     {editingCells[row.id] ? (
-                      <TextField
+                      <FormControl fullWidth variant="outlined">
+                      <InputLabel id={`animal-label-${row.id}`}>Animal</InputLabel>
+                      <Select
+                        labelId={`animal-label-${row.id}`}
                         name="animal"
                         value={row.animal}
                         onChange={(event) => handleCellChange(event, row.id)}
-                      />
+                        label="animal"
+                      >
+                        {Object.entries(animalOptions).map(([key, value]) => (
+                        <MenuItem key={key} value={value}>
+                        {value}
+                        </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                     ) : (
                       row.animal
                     )}
                   </TableCell>
                   <TableCell align="right">
                     {editingCells[row.id] ? (
-                      <TextField
+                      <FormControl fullWidth variant="outlined">
+                      <InputLabel id={`category-label-${row.id}`}>Category</InputLabel>
+                      <Select
+                        labelId={`category-label-${row.id}`}
                         name="category"
                         value={row.category}
                         onChange={(event) => handleCellChange(event, row.id)}
-                      />
+                        label="Category"
+                      >
+                        {Object.entries(categoryOptions).map(([key, value]) => (
+                        <MenuItem key={key} value={value}>
+                        {value}
+                        </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                     ) : (
                       row.category
                     )}

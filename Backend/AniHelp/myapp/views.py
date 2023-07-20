@@ -172,7 +172,7 @@ def Items_detail(request):
                     except OSError:
                         pass
 
-            print(new_item)
+            new_item['size'] = str(new_item['size']).split("(")[0]
             serializer = Itemsserializer(item, data=new_item)
             if serializer.is_valid():
                 serializer.save()
@@ -189,6 +189,67 @@ def save_uploaded_image(image_file, filename):
     # Save the image file to the media folder
     filepath = default_storage.save(f'item_images/{filename}', image_file)
     return filepath
+
+
+@api_view(['GET'])
+def get_category_options(request):
+    options = dict(Item._meta.get_field('category').choices)
+    return JsonResponse(options)
+
+@api_view(['GET'])
+def get_animals_options(request):
+    print("i am here")
+    options = dict(Item._meta.get_field('animal').choices)
+    return JsonResponse(options)
+
+@api_view(['GET'])
+def get_size_options(request):
+    options = dict(Item._meta.get_field('size').choices)
+    return JsonResponse(options)
+# def Accounts_list(request):
+#     accounts = Account.objects.all()
+#     data = serializers.serialize('json', accounts)
+#     return JsonResponse({"account: ", data}, safe=False)
+
+
+
+# def create_account(request):
+#     if request.method == 'POST':
+#         form = AccountForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('accounts_list')
+#     else:
+#         form = AccountForm()
+#
+#     return render(request, 'create_account.html', {'form': form})
+
+# print("req:",new_item)
+# image_file = request.data.get('image')
+# print(image_file)
+# # Get the filename from the image_file object (assuming it's a File object)
+# if(image_file.name):
+#     image_filename = image_file.name
+# print("------ i am here:", image_filename)
+# if str(request.data.get('image')).lower()  != 'undefined':
+#     print("------ i am here2:", request.data.get('image'))
+#         #and request.data.get('image')!= None:
+#     if image_file.name.startswith('media/item_images/'):
+#     # if  request.data.get('image')[:18] == '/media/item_images':
+#         print("------ i am here3:", request.data.get('image'))
+#         new_item['image'] = item.image
+#     else:
+#         image_file = request.data.get('image')
+#         image_filename = str(image_file)
+#         file_path = save_uploaded_image(image_file, image_filename)
+#         # item.image = file_path
+#         item.image = file_path
+#         new_item['image'] = item.image
+#         item.save()
+# #
+# else:
+#     new_item['image'] = None
+
 
 # def Items_detail(request):
 #     try:
@@ -243,53 +304,3 @@ def save_uploaded_image(image_file, filename):
 #     elif request.method == 'DELETE':
 #         item.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
-
-@api_view(['GET'])
-def get_category_options(request):
-    options = dict(Item._meta.get_field('category').choices)
-    return JsonResponse(options)
-
-
-# def Accounts_list(request):
-#     accounts = Account.objects.all()
-#     data = serializers.serialize('json', accounts)
-#     return JsonResponse({"account: ", data}, safe=False)
-
-
-
-# def create_account(request):
-#     if request.method == 'POST':
-#         form = AccountForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('accounts_list')
-#     else:
-#         form = AccountForm()
-#
-#     return render(request, 'create_account.html', {'form': form})
-
-# print("req:",new_item)
-# image_file = request.data.get('image')
-# print(image_file)
-# # Get the filename from the image_file object (assuming it's a File object)
-# if(image_file.name):
-#     image_filename = image_file.name
-# print("------ i am here:", image_filename)
-# if str(request.data.get('image')).lower()  != 'undefined':
-#     print("------ i am here2:", request.data.get('image'))
-#         #and request.data.get('image')!= None:
-#     if image_file.name.startswith('media/item_images/'):
-#     # if  request.data.get('image')[:18] == '/media/item_images':
-#         print("------ i am here3:", request.data.get('image'))
-#         new_item['image'] = item.image
-#     else:
-#         image_file = request.data.get('image')
-#         image_filename = str(image_file)
-#         file_path = save_uploaded_image(image_file, image_filename)
-#         # item.image = file_path
-#         item.image = file_path
-#         new_item['image'] = item.image
-#         item.save()
-# #
-# else:
-#     new_item['image'] = None
