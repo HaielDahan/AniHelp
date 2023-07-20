@@ -277,16 +277,63 @@ export default function EnhancedTable() {
       animal: '',
       category: '',
       description: '',
-      image: '',
+      image: 'null',
     });
   };
 
-  const handleSaveNewProduct = () => {
-    // Add the new product data to the items array
-    const newProductWithId = { ...newProduct, id: generateUniqueId() };
-    setItems((prevItems) => [newProductWithId, ...prevItems]);
+  const handleSaveNewProduct = async () => {
+    const newProductWithId = { id: generateUniqueId(), ...newProduct };
+    const confirmed = window.confirm('Are you sure you want to save the changes?');
+  
+    if (confirmed) {
+      if (newProductWithId) {
+        try {
+          const formData = new FormData();
+          formData.append('id', newProductWithId.id);
+          formData.append('item_name', newProductWithId.item_name);
+          formData.append('size', newProductWithId.size);
+          formData.append('animal', newProductWithId.animal);
+          formData.append('category', newProductWithId.category);
+          formData.append('description', newProductWithId.description);
+  
+          // Append the 'image' file data if it exists
+          if (newProductWithId.image !== 'null') {
+            console.log("i am here 1");
+            console.log("i am here 1 : ", newProductWithId.image );
+            formData.append('image', newProductWithId.image, newProductWithId.image.name);
+          }
+          else{
+            console.log("i am here 2");
+            formData.append('image','null')
+          }
+  
+          const authToken = localStorage.getItem('authToken');
+          const response = await axios.post(
+            'http://127.0.0.1:8000/myapp/items',
+            formData,
+            {
+              headers: {
+                Authorization: authToken,
+                'Content-Type': 'multipart/form-data', // Make sure to set the correct content type
+              },
+            }
+          );
+  
+          if (response.status === 201) {
+            console.log("this is the data:", response.data);
+            window.location.reload();
+          } else {
+            throw new Error('Failed to change this item');
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
     setNewProduct({}); // Reset newProduct state
   };
+  
+
 
   const handleCancelAdd = () => {
     // Reset newProduct state to remove the new row
@@ -430,7 +477,7 @@ export default function EnhancedTable() {
       if (file) {
         formData.append('image', file, file.name);
       } else {
-        formData.append('image', updatedItem.image); // Send 'null' to the server if there's no new image
+        formData.append('image', updatedItem.image);
       }
   
         const authToken = localStorage.getItem('authToken');
@@ -458,36 +505,6 @@ export default function EnhancedTable() {
   
 
 
-  // const handleSaveRow = (id) => {
-  //   const confirmed = window.confirm('Are you sure you want to save the changes?');
-  //     if (confirmed) {
-  //       const updatedItem = items.find((item) => item.id === id);
-  //     if (updatedItem) {
-  //       console.log('Updated Item:', updatedItem);
-  //         const handleEditReq = async () => {
-  //           try {
-  //             const authToken = localStorage.getItem('authToken');
-  //             const response = await axios.put('http://127.0.0.1:8000/myapp/item', {
-  //               headers: {
-  //                 Authorization: authToken,
-  //               },
-  //               data: {
-  //                 items: updatedItem,
-  //               },
-  //             });
-  //             if (response.status === 204) {
-  //                 window.location.reload();
-  //             } else {
-  //               throw new Error('Failed to change this item');
-  //             }
-  //           } catch (error) {
-  //             console.error(error);
-  //           }
-  //         };
-  //         handleEditReq();
-  //       }
-  //     }
-  // };
   
 
   const handleExitEdit = (id) => {
@@ -530,9 +547,9 @@ export default function EnhancedTable() {
   
   
   
- useEffect(()=>{
-   console.log("i am here:",file)
- },[file])
+// useEffect(()=>{
+//   console.log("i am here:",file)
+// },[file])
 
 return (
   <div>
@@ -806,3 +823,109 @@ return (
 // }
 
 // export default Account;
+
+
+
+
+  // const handleSaveRow = (id) => {
+    // const confirmed = window.confirm('Are you sure you want to save the changes?');
+    //   if (confirmed) {
+    //     const updatedItem = items.find((item) => item.id === id);
+    //   if (updatedItem) {
+    //     console.log('Updated Item:', updatedItem);
+    //       const handleEditReq = async () => {
+    //         try {
+    //           const authToken = localStorage.getItem('authToken');
+    //           const response = await axios.put('http://127.0.0.1:8000/myapp/item', {
+    //             headers: {
+    //               Authorization: authToken,
+    //             },
+    //             data: {
+    //               items: updatedItem,
+    //             },
+    //           });
+    //           if (response.status === 204) {
+    //               window.location.reload();
+    //           } else {
+    //             throw new Error('Failed to change this item');
+    //           }
+    //         } catch (error) {
+    //           console.error(error);
+    //         }
+    //       };
+    //       handleEditReq();
+    //     }
+    //   }
+  // };
+
+  
+  // const handleSaveNewProduct = () => {
+  //   // Add the new product data to the items array
+  //   const newProductWithId = { ...newProduct, id: generateUniqueId() };
+  //   // setItems((prevItems) => [newProductWithId, ...prevItems]);
+  //   const handleSaveNewProduct = async () => {
+  //     // Add the new product data to the items array
+  //     const newProductWithId = { ...newProduct, id: generateUniqueId() };
+  //     const confirmed = window.confirm('Are you sure you want to save the changes?');
+    
+  //     if (confirmed) {
+  //       if (newProductWithId) {
+  //         try {
+  //           const authToken = localStorage.getItem('authToken');
+  //           const response = await axios.post(
+  //             'http://127.0.0.1:8000/myapp/items',
+  //             {
+  //               items: newProductWithId,
+  //             },
+  //             {
+  //               headers: {
+  //                 Authorization: authToken, // Pass the token directly here
+  //               },
+  //             }
+  //           );
+    
+  //           if (response.status === 204) {
+  //             setItems((prevItems) => [response.data, ...prevItems]);
+  //             window.location.reload();
+  //           } else {
+  //             throw new Error('Failed to change this item');
+  //           }
+  //         } catch (error) {
+  //           console.error(error);
+  //         }
+  //       }
+  //     }
+  //     setNewProduct({}); // Reset newProduct state
+  //   };
+    
+    // const handleSaveNewProduct = async () => {
+  //   const newProductWithId = {id: generateUniqueId() ,...newProduct };
+  //   const confirmed = window.confirm('Are you sure you want to save the changes?');
+  
+  //   if (confirmed) {
+  //     if (newProductWithId) {
+  //       try {
+  //         const authToken = localStorage.getItem('authToken');
+  //         const response = await axios.post(
+  //           'http://127.0.0.1:8000/myapp/items',newProductWithId,
+  //           {
+  //             headers: {
+  //               Authorization: authToken, 
+  //             },
+  //           }
+  //         );
+  
+  //         if (response.status === 201) {
+  //           console.log("this is the data:",response.data)
+  //           // setItems(response.data);
+  //           window.location.reload();
+  //         } else {
+  //           throw new Error('Failed to change this item');
+  //         }
+  //       } catch (error) {
+  //         console.error(error);
+  //       }
+  //     }
+  //   }
+  //   setNewProduct({}); // Reset newProduct state
+  // };

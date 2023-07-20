@@ -93,13 +93,24 @@ def Items_list(request):
     user = User.objects.get(username=username)
     account = Account.objects.get(user=user)
     if request.method=='POST':
-        seri = Itemsserializer(data=request.data)
+        print("req:",request.data)
+        new_item = {}
+        for req_key in request.data:
+            value = request.data.get(req_key)
+            new_item.update({req_key: value})
+        if new_item['image'] == 'null':
+            new_item['image'] = None
+        seri = Itemsserializer(data=new_item)
         if seri.is_valid():
-            seri.save()
+            item = seri.save()
+            account.items.add(item)
             return Response(seri.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(seri.errors, status=status.HTTP_400_BAD_REQUEST)
     if request.method =='GET':
         # items = Item.objects.all()
         items = account.items.all()
+        print(items)
         seri = Itemsserializer(items, many=True)
         return Response(seri.data)
 
