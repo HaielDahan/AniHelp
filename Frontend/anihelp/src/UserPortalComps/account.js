@@ -644,25 +644,77 @@ return (
                     />
                   </TableCell>
                   <TableCell align="right">
-                    <TextField
+                  <FormControl fullWidth variant="outlined">
+                        <InputLabel id={`size-label-${newProduct.id}`}>Size</InputLabel>
+                        <Select
+                          labelId={`size-label-${newProduct.id}`}
+                          name="size"
+                          value={newProduct.size}
+                          onChange={(event) => setNewProduct({ ...newProduct, size: event.target.value })}
+                          label="size"
+                        >
+                          {Object.entries(sizeOptions).map(([key, value]) => (
+                          <MenuItem key={key} value={value}>
+                          {value}
+                          </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    
+                    {/* <TextField
                       name="size"
                       value={newProduct.size}
                       onChange={(event) => setNewProduct({ ...newProduct, size: event.target.value })}
-                    />
+                    /> */}
                   </TableCell>
                   <TableCell align="right">
-                    <TextField
+                  <FormControl fullWidth variant="outlined">
+                      <InputLabel id={`animal-label-${newProduct.id}`}>Animal</InputLabel>
+                      <Select
+                        labelId={`animal-label-${newProduct.id}`}
+                        name="animal"
+                        value={newProduct.animal}
+                        onChange={(event) => setNewProduct({ ...newProduct, animal: event.target.value })}
+                        label="animal"
+                      >
+                        {Object.entries(animalOptions).map(([key, value]) => (
+                        <MenuItem key={key} value={value}>
+                        {value}
+                        </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    
+                    
+                    {/* <TextField
                       name="animal"
                       value={newProduct.animal}
                       onChange={(event) => setNewProduct({ ...newProduct, animal: event.target.value })}
-                    />
+                    /> */}
                   </TableCell>
                   <TableCell align="right">
-                    <TextField
+                  <FormControl fullWidth variant="outlined">
+                      <InputLabel id={`category-label-${newProduct.id}`}>Category</InputLabel>
+                      <Select
+                        labelId={`category-label-${newProduct.id}`}
+                        name="category"
+                        value={newProduct.category}
+                        onChange={(event) => setNewProduct({ ...newProduct, category: event.target.value })}
+                        label="category"
+                      >
+                        {Object.entries(categoryOptions).map(([key, value]) => (
+                        <MenuItem key={key} value={value}>
+                        {value}
+                        </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  
+                    {/* <TextField
                       name="category"
                       value={newProduct.category}
                       onChange={(event) => setNewProduct({ ...newProduct, category: event.target.value })}
-                    />
+                    /> */}
                   </TableCell>
                   <TableCell align="right">
                     <TextField

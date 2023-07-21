@@ -93,13 +93,13 @@ def Items_list(request):
     user = User.objects.get(username=username)
     account = Account.objects.get(user=user)
     if request.method=='POST':
-        print("req:",request.data)
         new_item = {}
         for req_key in request.data:
             value = request.data.get(req_key)
             new_item.update({req_key: value})
         if new_item['image'] == 'null':
             new_item['image'] = None
+        new_item['size'] = str(new_item['size']).split("(")[0]
         seri = Itemsserializer(data=new_item)
         if seri.is_valid():
             item = seri.save()
