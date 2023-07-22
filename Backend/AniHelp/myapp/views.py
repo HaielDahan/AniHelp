@@ -22,16 +22,19 @@ import os
 def Login_view(request):
     if request.method == 'POST':
         serializer = LoginSerializer(data=request.data)
+        print(serializer.is_valid())
+        print(serializer.errors)
         if serializer.is_valid():
             return Response({'message': 'Authentication successful','detail':request.data['username']}, status=status.HTTP_200_OK)
         else:
-            print(request.data)
+            print("------",request.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
         username = request.headers.get('Authorization')
         try:
             # Try to retrieve the user based on the provided username
             user = User.objects.get(username=username)
+            print("--------------------------", user.username)
             # Return the username or any specific information you want
             return Response({'username': user.username}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
@@ -89,9 +92,12 @@ def Accounts_detail(request):
 
 @api_view(['GET','POST'])
 def Items_list(request):
+    print("---- here:", request.data)
     username = request.headers.get('Authorization')
+    print("username:", username)
     user = User.objects.get(username=username)
     account = Account.objects.get(user=user)
+    print("account: ",account)
     if request.method=='POST':
         new_item = {}
         for req_key in request.data:
@@ -133,6 +139,7 @@ def Items_detail(request):
                 }
                 for item in items
             ]
+            print("data:", data)
             return JsonResponse(data, safe=False)
         elif request.method == 'DELETE':
             item_id = request.data['items']
@@ -182,6 +189,21 @@ def Items_detail(request):
             return HttpResponse(status=400)
     except:
         return HttpResponse(status=500)
+
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def Menu_items_detail(request):
+    try:
+        if request.method == 'GET':
+            items = Item.objects.all()
+            # items = Item.objects.all()
+            print(items)
+            seri = Itemsserializer(items, many=True)
+            return Response(seri.data)
+    except:
+        return HttpResponse(status=500)
+
 
 
 

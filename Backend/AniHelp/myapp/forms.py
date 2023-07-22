@@ -8,11 +8,13 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField()
 
     def validate(self, attrs):
+        # print("attrs:", attrs)
         username = attrs.get('username')
         password = attrs.get('password')
-
+        # print("u:", username, "p:", password)
         if username and password:
             user = authenticate(username=username, password=password)
+            # print("user:",user)
             if user is not None:
                 return attrs
         raise serializers.ValidationError('Invalid username or password')

@@ -13,5 +13,6 @@ urlpatterns = [
     path('category-options/', get_category_options),
     path('animals-options/', get_animals_options),
     path('size-options/', get_size_options),
+    path('menu', views.Menu_items_detail),
 ]
 #+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
