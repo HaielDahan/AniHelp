@@ -18,9 +18,9 @@ class Item(models.Model):
     )
     category = models.CharField(
         max_length=25,
-        choices=[('toys', 'toys'), ('Food and related products', 'Food and related products'),
-                 ('sleep ', 'sleep '), ('clothing', 'clothing'),
-                 ('Straps ', 'Straps '), ('cages', 'cages')],
+        choices=[('toys', 'toys'), ('food and related products', 'food and related products'),
+                 ('sleep', 'sleep'), ('clothing', 'clothing'),
+                 ('straps', 'straps'), ('cages', 'cages')],
         blank=False,
     )
     description = models.CharField(max_length=200, blank=True)

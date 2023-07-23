@@ -30,6 +30,7 @@ import TextField from '@mui/material/TextField';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SaveIcon from '@mui/icons-material/Save';
 import "./account.css";
+import { useNavigate } from 'react-router-dom';
 import {
   FormControl,
   InputLabel,
@@ -233,13 +234,7 @@ function EnhancedTableToolbar(props) {
             <DeleteIcon />
           </IconButton>
         </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+      ) : null}
       <Tooltip title="Add">
         <IconButton onClick={handleAdd}>
         <AddIcon />
@@ -270,6 +265,33 @@ export default function EnhancedTable() {
   const [animalOptions, setAnimalOptions] = useState([]);
   const [sizeOptions, setSizeOptions] = useState([]);
   
+  
+  const back_styles = {
+    container: {
+      display: 'flex',
+      alignItems: 'center',
+      height: '10vh',
+      padding: '0 20px',
+    },
+    backButton: {
+      padding: '10px',
+      backgroundColor: 'white',
+      color: 'blue',
+      border: 'none',
+      cursor: 'pointer',
+      marginRight: '20px', // Add margin to the right to create space between back button and title
+    },
+    title: {
+      marginLeft: '35%', // Adjust the value as per your preference to move the title to the left
+      flexGrow: 1, // This makes the title occupy the remaining space and pushes the back button to the left side
+      textAlign: 'left', // You can align the text to the left or center based on your preference
+    },
+  };
+
+  
+  
+  
+
 
   const [newProduct, setNewProduct] = useState({
     // item_name: '',
@@ -591,24 +613,19 @@ export default function EnhancedTable() {
         console.error(error);
       });
   }, []);
+  const navigate = useNavigate();
   
-  
-// useEffect(()=>{
-//   console.log("i am here:",file)
-// },[file])
 
 return (
   <div>
     <NavbarOption />
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '10vh',
-      }}
-    >
+    <Box sx={back_styles.container} >
+    <button style={back_styles.backButton} onClick={() => navigate('/userportal')}>
+        Back
+      </button>
+      <div style={back_styles.title}>
       <h1>Personal Area</h1>
+      </div>
     </Box>
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>

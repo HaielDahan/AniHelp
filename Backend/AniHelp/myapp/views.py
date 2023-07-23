@@ -34,7 +34,6 @@ def Login_view(request):
         try:
             # Try to retrieve the user based on the provided username
             user = User.objects.get(username=username)
-            print("--------------------------", user.username)
             # Return the username or any specific information you want
             return Response({'username': user.username}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
@@ -60,7 +59,7 @@ def Accounts_list(request):
         my_account = {'user': user.id,'name':request.data['name'], 'gender':request.data['gender'],'age':request.data['age'],
                 'place':request.data['place'], 'prefix':request.data['prefix'], 'phone':request.data['phone']}
         seri_account = Accountserializer(data=my_account)
-        print("seri_account:", seri_account.is_valid())
+        # print("seri_account:", seri_account.is_valid())
         if seri_account.is_valid():
             seri_account.save()
             return Response(seri_account.data, status=status.HTTP_201_CREATED)
@@ -85,6 +84,15 @@ def Accounts_detail(request):
         return Response(seri.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'DELETE':
         try:
+            account_items = account.items.all()
+            id_array = [item['id'] for item in account_items.values()]
+            for id in id_array:
+                item = Item.objects.get(id=id)
+                print(item)
+                if item.image:
+                    default_storage.delete(item.image.path)
+                item.delete()
+            account.user.delete()
             account.delete()
             return HttpResponse(status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
@@ -116,7 +124,6 @@ def Items_list(request):
     if request.method =='GET':
         # items = Item.objects.all()
         items = account.items.all()
-        print(items)
         seri = Itemsserializer(items, many=True)
         return Response(seri.data)
 
@@ -143,6 +150,7 @@ def Items_detail(request):
             return JsonResponse(data, safe=False)
         elif request.method == 'DELETE':
             item_id = request.data['items']
+            print("item:", item_id)
             try:
                 for id in item_id:
                     item = Item.objects.get(id=id)
@@ -195,10 +203,12 @@ def Items_detail(request):
 @api_view(['GET', 'PUT', 'DELETE'])
 def Menu_items_detail(request):
     try:
+        selected_category = request.query_params.get('selectedCategory')
         if request.method == 'GET':
-            items = Item.objects.all()
-            # items = Item.objects.all()
-            print(items)
+            if selected_category == 'All':
+                items = Item.objects.all()
+            else:
+                items = Item.objects.filter(category=selected_category)
             seri = Itemsserializer(items, many=True)
             return Response(seri.data)
     except:

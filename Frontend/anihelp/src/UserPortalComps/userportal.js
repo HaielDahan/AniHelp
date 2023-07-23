@@ -58,21 +58,26 @@ const card_style = {
 function Userportalpage() {
   const[items, setItems] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(''); 
+
   useEffect(() => {
-    const authToken = localStorage.getItem('authToken');
-    axios
-        .get('http://127.0.0.1:8000/myapp/menu', {
-    })
-    .then((res) => {
-      console.log("menu items:",res.data) 
-      setItems(res.data);
-    })
-    .catch((error) => {
+    const fetchData = async () => {
+      try {
+        const authToken = localStorage.getItem('authToken');
+        const response = await axios.get('http://127.0.0.1:8000/myapp/menu',{params: { selectedCategory },
+      });
+        console.log("menu items:", response.data);
+        setItems(response.data);
+      } catch (error) {
         console.error(error);
-    });
-      }, []);
+      }
+    };
 
+    fetchData();
+  }, [selectedCategory]); // useEffect will be triggered whenever selectedCategory changes
 
+  const handleSelect = (newSelect) => {
+    setSelectedCategory(newSelect);
+  };
   useEffect(() => {
     console.log("item:", items);
   }, [items]);
@@ -89,26 +94,26 @@ function Userportalpage() {
       <NavbarOption />
       <div className="button-container">
         <List sx={style} component="nav" aria-label="mailbox folders">
-          <ListItem button onClick={() => setSelectedCategory('All')}> {/* Update the selected category */}
+          <ListItem button onClick={() => handleSelect('All')}> {/* Update the selected category */}
             <ListItemText primary="All" />
           </ListItem>
           {/* ... (other categories) */}
-          <ListItem button onClick={() => setSelectedCategory('Toys')}>
+          <ListItem button onClick={() => setSelectedCategory('toys')}>
         <ListItemText primary="Toys" />
       </ListItem>
-      <ListItem button>
+      <ListItem button onClick={() => setSelectedCategory('food and related products')}>
         <ListItemText primary="Food & Related" />
       </ListItem>
-      <ListItem button>
+      <ListItem button onClick={() => setSelectedCategory('sleep')}>
         <ListItemText primary="Sleep" />
       </ListItem>
-      <ListItem button>
+      <ListItem button onClick={() => setSelectedCategory('clothing')}>
         <ListItemText primary="Clothing" />
       </ListItem>
-      <ListItem button>
-        <ListItemText primary="Strap" />
+      <ListItem button onClick={() => setSelectedCategory('straps')}>
+        <ListItemText primary="Straps" />
       </ListItem>
-      <ListItem button>
+      <ListItem button onClick={() => setSelectedCategory('cages')}>
         <ListItemText primary="Cages" />
       </ListItem>
         </List>

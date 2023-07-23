@@ -19,8 +19,12 @@ const Signup = ({closeSignUpModal}) =>{
     event.preventDefault();
     axios.post('http://127.0.0.1:8000/myapp/accounts', data)
       .then(response => {
-        console.log(response.data);
-        setData({username:'', email:'', password:'', password2:'', name:'', gender:'', age:'', place:'', prefix:'', phone:''});
+        if (response.status === 201) {
+          // console.log(response.data);
+          setData({username:'', email:'', password:'', password2:'', name:'', gender:'', age:'', place:'', prefix:'', phone:''});
+          window.alert('The account was created successfully');
+          closeSignUpModal(false);
+        }
       })
       .catch(error => {
         console.error(error);
