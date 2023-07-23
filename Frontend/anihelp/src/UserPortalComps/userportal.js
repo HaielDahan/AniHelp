@@ -24,6 +24,11 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -57,7 +62,8 @@ const card_style = {
 
 function Userportalpage() {
   const[items, setItems] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(''); 
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedOption, setSelectedOption] = useState('products');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,16 +94,56 @@ function Userportalpage() {
     setExpanded(!expanded);
   };
 
+  function handleShare(item) {
+  // Check if the 'navigator.share' method is supported by the browser
+  if (navigator.share) {
+    navigator
+      .share({
+        title: item.item_name,
+        text: `Check out this item intended for ${item.animal} size ${item.size}`,
+        url: window.location.href,
+      })
+      .then(() => console.log('Shared successfully.'))
+      .catch((error) => console.error('Error sharing:', error));
+  } else {
+    console.log('Native sharing not supported.');
+    // You can implement a fallback or show a custom sharing UI for unsupported browsers here
+  }
+}
+
 
   return (
     <div className="user-portal-page">
       <NavbarOption />
+      <FormControl style={{ position: 'absolute', top: '120px', left: '20px' }}>
+      <FormLabel
+            id="demo-radio-buttons-group-label"
+            style={{
+              fontSize: '20px', // Increase the font size
+              color: 'inherit', // Change the text color to red (#ff0000)
+              fontWeight: 'bold', // Optionally, make the text bold
+              // Add more text-related styles as needed
+            }}
+          >
+        menu options:
+        </FormLabel>
+        <RadioGroup
+          aria-labelledby="demo-radio-buttons-group-label"
+          value={selectedOption}
+          onChange={(event) => setSelectedOption(event.target.value)}
+        >
+          <FormControlLabel value="products" control={<Radio />} label="Products" />
+          <FormControlLabel value="animals" control={<Radio />} label="Animals" />
+          <FormControlLabel value="size" control={<Radio />} label="Size" />
+        </RadioGroup>
+      </FormControl>
+      
       <div className="button-container">
+      {selectedOption === 'products' ? (
         <List sx={style} component="nav" aria-label="mailbox folders">
           <ListItem button onClick={() => handleSelect('All')}> {/* Update the selected category */}
             <ListItemText primary="All" />
           </ListItem>
-          {/* ... (other categories) */}
           <ListItem button onClick={() => setSelectedCategory('toys')}>
         <ListItemText primary="Toys" />
       </ListItem>
@@ -117,10 +163,51 @@ function Userportalpage() {
         <ListItemText primary="Cages" />
       </ListItem>
         </List>
+        ):selectedOption === 'animals' ? (
+        <List sx={style} component="nav" aria-label="mailbox folders">
+          <ListItem button onClick={() => handleSelect('All')}>
+            <ListItemText primary="All" />
+          </ListItem>
+          <ListItem button onClick={() => setSelectedCategory('dog')}>
+        <ListItemText primary="Dog" />
+      </ListItem>
+      <ListItem button onClick={() => setSelectedCategory('cat')}>
+        <ListItemText primary="Cat" />
+      </ListItem>
+        </List>
+        ):(
+          <List sx={style} component="nav" aria-label="mailbox folders">
+          <ListItem button onClick={() => handleSelect('All')}>
+            <ListItemText primary="All" />
+          </ListItem>
+          <ListItem button onClick={() => setSelectedCategory('XS')}>
+        <ListItemText primary="XS" />
+      </ListItem>
+      <ListItem button onClick={() => setSelectedCategory('S')}>
+        <ListItemText primary="S" />
+      </ListItem>
+      <ListItem button onClick={() => setSelectedCategory('M')}>
+        <ListItemText primary="M" />
+      </ListItem>
+      <ListItem button onClick={() => setSelectedCategory('L')}>
+        <ListItemText primary="L" />
+      </ListItem>
+      <ListItem button onClick={() => setSelectedCategory('XL')}>
+        <ListItemText primary="XL" />
+      </ListItem>
+      <ListItem button onClick={() => setSelectedCategory('XXL')}>
+        <ListItemText primary="XXL" />
+      </ListItem>
+      <ListItem button onClick={() => setSelectedCategory('OTHER')}>
+        <ListItemText primary="Other" />
+      </ListItem>
+        </List>
+      )}
       </div>
+
       <div className="items-container" style={card_style}>
         {items
-          .filter(item => selectedCategory === 'All' || item.category === selectedCategory) // Filter items based on the selected category
+          .filter(item => selectedCategory === 'All' || item.category === selectedCategory || item.animal === selectedCategory || item.size === selectedCategory ) // Filter items based on the selected category
           .map(item => (
             <Card sx={{ maxWidth: 345 }}>
       <CardHeader
@@ -152,7 +239,7 @@ function Userportalpage() {
         <IconButton aria-label="add to favorites">
           <FavoriteIcon />
         </IconButton>
-        <IconButton aria-label="share">
+        <IconButton aria-label="share" onClick={() => handleShare(item)}>
           <ShareIcon />
         </IconButton>
         <ExpandMore

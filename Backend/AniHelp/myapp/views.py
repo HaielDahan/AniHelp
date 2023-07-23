@@ -202,13 +202,21 @@ def Items_detail(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def Menu_items_detail(request):
+    available_categories = [category[0] for category in Item._meta.get_field('category').choices]
+    available_animals = [animal[0] for animal in Item._meta.get_field('animal').choices]
+    available_size = [size[0] for size in Item._meta.get_field('size').choices]
     try:
         selected_category = request.query_params.get('selectedCategory')
         if request.method == 'GET':
             if selected_category == 'All':
                 items = Item.objects.all()
-            else:
+            elif selected_category in available_categories:
                 items = Item.objects.filter(category=selected_category)
+            elif selected_category in available_animals:
+                items = Item.objects.filter(animal=selected_category)
+            elif selected_category in available_size:
+                items = Item.objects.filter(size=selected_category)
+            print("items:", items)
             seri = Itemsserializer(items, many=True)
             return Response(seri.data)
     except:
