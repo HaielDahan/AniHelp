@@ -29,6 +29,15 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+// import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import Checkbox from '@mui/material/Checkbox';
+import FormGroup from '@mui/material/FormGroup';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -43,52 +52,229 @@ const ExpandMore = styled((props) => {
 
 const style = {
   width: '100%',
-  maxWidth: 1250,
+  maxWidth: '65%',
   bgcolor: 'background.paper',
 };
 
 
 const card_style = {
   width: '100%',
-  maxWidth: 1250,
+  maxWidth: '65%',
   margin: '0 auto', // Add this line to horizontally center the cards
   bgcolor: 'background.paper',
   display: 'grid', // Add a grid layout to the container
   gridTemplateColumns: 'repeat(3, 1fr)', // Arrange cards in 3 columns
-  gap: '16px', // Add gap between cards
+  gap: '1%', // Add gap between cards
 };
 
-
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 function Userportalpage() {
   const[items, setItems] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedOption, setSelectedOption] = useState('products');
+  const [expanded, setExpanded] = React.useState(false);
+  const [open_1, setOpen_1] = useState(false);
+  const [open_2, setOpen_2] = useState(false);
+  const[button_name_1, setButtonName_1] = useState('animals filter')
+  const[button_name_2, setButtonName_2] = useState('size filter')
+  const [categoryOptions_1, setCategoryOptions_1] = useState([]);
+  const [categoryOptions_2, setCategoryOptions_2] = useState([]);
+  const [checkbox_selection, setCheckboxSlection] = useState([]);
+  const [checkbox_selection_2, setCheckboxSlection_2] = useState([]);
+  const [filter, setFilter] = useState(false);
+
+
+  
+
+
+  useEffect(() => {
+    if (button_name_1 === 'products filter') {
+      axios.get('http://127.0.0.1:8000/myapp/category-options')
+        .then(res => {
+          const categoryOptionsArray = Object.entries(res.data).map(([key, value]) => value);
+          setCategoryOptions_1(categoryOptionsArray);
+          setCheckboxSlection([]);
+          setCheckboxSlection_2([]);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    } else if (button_name_1 === 'animals filter') {
+      axios.get('http://127.0.0.1:8000/myapp/animals-options/')
+        .then(res => {
+          const categoryOptionsArray = Object.entries(res.data).map(([key, value]) => value);
+          setCategoryOptions_1(categoryOptionsArray);
+          setCheckboxSlection([]);
+          setCheckboxSlection_2([]);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    } else {
+      axios.get('http://127.0.0.1:8000/myapp/size-options/')
+        .then(res => {
+          const categoryOptionsArray = Object.entries(res.data).map(([key, value]) => value);
+          setCategoryOptions_1(categoryOptionsArray);
+          setCheckboxSlection([]);
+          setCheckboxSlection_2([]);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+  }, [button_name_1]);
+
+
+
+
+  useEffect(() => {
+    if (button_name_2 === 'products filter') {
+      axios.get('http://127.0.0.1:8000/myapp/category-options')
+        .then(res => {
+          const categoryOptionsArray = Object.entries(res.data).map(([key, value]) => value);
+          setCategoryOptions_2(categoryOptionsArray);
+          setCheckboxSlection([]);
+          setCheckboxSlection_2([]);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    } else if (button_name_2 === 'animals filter') {
+      axios.get('http://127.0.0.1:8000/myapp/animals-options/')
+        .then(res => {
+          const categoryOptionsArray = Object.entries(res.data).map(([key, value]) => value);
+          setCategoryOptions_2(categoryOptionsArray);
+          setCheckboxSlection([]);
+          setCheckboxSlection_2([]);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    } else {
+      axios.get('http://127.0.0.1:8000/myapp/size-options/')
+        .then(res => {
+          const categoryOptionsArray = Object.entries(res.data).map(([key, value]) => value);
+          setCategoryOptions_2(categoryOptionsArray);
+          setCheckboxSlection([]);
+          setCheckboxSlection_2([]);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+  }, [button_name_2]);
+
+  // useEffect(() => {
+  //   console.log("name::", button_name_1);
+  // }, [button_name_1]);
+
+
+  const handleCheckboxChange = (index) => (event) => {
+    if (event.target.checked === true){
+      const newCategoryOptions = [...checkbox_selection,categoryOptions_1[index]];
+      setCheckboxSlection(newCategoryOptions);
+    }
+    else{
+      setCheckboxSlection(checkbox_selection => checkbox_selection.filter(item => item !== categoryOptions_1[index]));
+    }
+  };
+
+  const handleCheckboxChange_2 = (index) => (event) => {
+    console.log("i am here:",event.target.checked)
+    if (event.target.checked === true){
+      const newCategoryOptions = [...checkbox_selection_2,categoryOptions_2[index]];
+      setCheckboxSlection_2(newCategoryOptions);
+    }
+    else{
+      setCheckboxSlection_2(checkbox_selection_2 => checkbox_selection_2.filter(item => item !== categoryOptions_2[index]));
+    }
+  };
+
+  // useEffect(() => {
+  //   console.log("check 1:", checkbox_selection);
+  //   console.log("check 2:", checkbox_selection_2);
+  // }, [checkbox_selection,checkbox_selection_2]);
+
+  const handleClickOpen = () => {
+    setOpen_1(true);
+    setOpen_2(false);
+  };
+
+  const handleClose = () => {
+    setOpen_1(false);
+  };
+
+
+  const handleClickOpen_2 = () => {
+    setOpen_2(true);
+    setOpen_1(false);
+  };
+
+  const handleClose_2 = () => {
+    setOpen_2(false);
+  };
+
+  const handleFilter = () => {
+    setOpen_1(false);
+    setOpen_2(false);
+    setFilter(true);
+
+  };
+  useEffect(() => {
+    if (selectedOption === 'products'){
+      setSelectedCategory('All');
+      setButtonName_1('animals filter');
+      setButtonName_2('size filter');
+    }
+    else if (selectedOption === 'animals'){
+      setSelectedCategory('All');
+      setButtonName_1('products filter');
+      setButtonName_2('size filter');
+    }else{
+      setSelectedCategory('All');
+      setButtonName_1('products filter');
+      setButtonName_2('animals filter');
+    }
+  }, [selectedOption]);
+  
+  const handleRadioGropChange = (radio_select) => {
+    setSelectedOption(radio_select);
+  };
+
+  //   useEffect(() => {
+  //   console.log("select:", selectedOption);
+  //   console.log("name:", button_name_1);
+  //   console.log("category:", categoryOptions_1);
+  // }, [selectedOption,button_name_1,categoryOptions_1]);
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const authToken = localStorage.getItem('authToken');
-        const response = await axios.get('http://127.0.0.1:8000/myapp/menu',{params: { selectedCategory },
+        const response = await axios.get('http://127.0.0.1:8000/myapp/menu',{
+          params: {selectedCategory ,checkbox_selection, checkbox_selection_2},
       });
-        console.log("menu items:", response.data);
+        // console.log("menu items:", response.data);
         setItems(response.data);
+        setFilter(false);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchData();
-  }, [selectedCategory]); // useEffect will be triggered whenever selectedCategory changes
+  }, [selectedCategory, filter]); // useEffect will be triggered whenever selectedCategory changes
 
   const handleSelect = (newSelect) => {
     setSelectedCategory(newSelect);
   };
-  useEffect(() => {
-    console.log("item:", items);
-  }, [items]);
-
-  const [expanded, setExpanded] = React.useState(false);
+  // useEffect(() => {
+  //   console.log("item:", items);
+  // }, [items]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -115,11 +301,11 @@ function Userportalpage() {
   return (
     <div className="user-portal-page">
       <NavbarOption />
-      <FormControl style={{ position: 'absolute', top: '120px', left: '20px' }}>
+      <FormControl style={{ position: 'absolute', top: '15%', left: '2%', color:'#2E2EFE' }}>
       <FormLabel
             id="demo-radio-buttons-group-label"
             style={{
-              fontSize: '20px', // Increase the font size
+              fontSize: '150%', // Increase the font size
               color: 'inherit', // Change the text color to red (#ff0000)
               fontWeight: 'bold', // Optionally, make the text bold
               // Add more text-related styles as needed
@@ -128,15 +314,91 @@ function Userportalpage() {
         menu options:
         </FormLabel>
         <RadioGroup
+         style={{ position: 'absolute', top: '90%', left: '2%'}}
           aria-labelledby="demo-radio-buttons-group-label"
           value={selectedOption}
-          onChange={(event) => setSelectedOption(event.target.value)}
+          onChange={(event) => handleRadioGropChange(event.target.value)}
         >
           <FormControlLabel value="products" control={<Radio />} label="Products" />
           <FormControlLabel value="animals" control={<Radio />} label="Animals" />
           <FormControlLabel value="size" control={<Radio />} label="Size" />
         </RadioGroup>
       </FormControl>
+
+
+      <FormLabel
+            id="demo-radio-buttons-group-label"
+            style={{
+              fontSize: '105%', // Increase the font size
+              color: 'inherit', // Change the text color to red (#ff0000)
+              fontWeight: 'bold', // Optionally, make the text bold
+              position: 'absolute', 
+              top: '40%',
+              left: '2%',
+              color:'#2E2EFE'
+            }}
+          >
+        Advanced filtering:
+        </FormLabel>
+      
+      <Button variant="outlined" onClick={handleClickOpen} style={{ position: 'absolute', top: '45%', left: '2%' }}>
+        {button_name_1}
+      </Button>
+      <Dialog
+        open={open_1}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{button_name_1}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+          <FormGroup>
+              {categoryOptions_1.map((option, index) => (
+               <FormControlLabel 
+                  key={index}
+                  control={<Checkbox checked={option.checked} onChange={handleCheckboxChange(index)} />}
+                  label={option}
+                />
+              ))}
+            </FormGroup>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleFilter}>filter</Button>
+          <Button onClick={handleClose}>cancel</Button>
+        </DialogActions>
+      </Dialog>
+
+
+      <Button variant="outlined" onClick={handleClickOpen_2} style={{ position: 'absolute', top: '52%', left: '2%'}}>
+        {button_name_2}
+      </Button>
+      <Dialog
+        open={open_2}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose_2}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{button_name_2}</DialogTitle>
+        <DialogContent>
+          <FormGroup>
+              {categoryOptions_2.map((option, index) => (
+               <FormControlLabel 
+                  key={index}
+                  control={<Checkbox checked={option.checked} onChange={handleCheckboxChange_2(index)} />}
+                  label={option}
+                />
+              ))}
+            </FormGroup>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleFilter}>filter</Button>
+          <Button onClick={handleClose_2}>cancel</Button>
+        </DialogActions>
+      </Dialog>
       
       <div className="button-container">
       {selectedOption === 'products' ? (

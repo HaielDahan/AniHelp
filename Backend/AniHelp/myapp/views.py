@@ -202,11 +202,16 @@ def Items_detail(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def Menu_items_detail(request):
+    # print(request.query_params)
     available_categories = [category[0] for category in Item._meta.get_field('category').choices]
     available_animals = [animal[0] for animal in Item._meta.get_field('animal').choices]
     available_size = [size[0] for size in Item._meta.get_field('size').choices]
     try:
         selected_category = request.query_params.get('selectedCategory')
+        checkbox_selection = checkbox_selection = request.query_params.getlist('checkbox_selection[]')
+        checkbox_selection2 = request.query_params.getlist('checkbox_selection_2[]')
+        processed_selection = [item.split("(")[0] for item in checkbox_selection2]
+        # print("processed_selection",processed_selection)
         if request.method == 'GET':
             if selected_category == 'All':
                 items = Item.objects.all()
@@ -216,7 +221,17 @@ def Menu_items_detail(request):
                 items = Item.objects.filter(animal=selected_category)
             elif selected_category in available_size:
                 items = Item.objects.filter(size=selected_category)
-            print("items:", items)
+            if checkbox_selection:
+                if checkbox_selection[0] in available_animals:
+                    items = items.filter(animal__in=checkbox_selection)
+                if checkbox_selection[0] in available_categories:
+                    items = items.filter(category__in=checkbox_selection)
+            if processed_selection:
+                if processed_selection[0] in available_animals:
+                    items = items.filter(animal__in=processed_selection)
+                if processed_selection[0] in available_size:
+                    items = items.filter(size__in=processed_selection)
+            # print("items:", items)
             seri = Itemsserializer(items, many=True)
             return Response(seri.data)
     except:
@@ -238,7 +253,6 @@ def get_category_options(request):
 
 @api_view(['GET'])
 def get_animals_options(request):
-    print("i am here")
     options = dict(Item._meta.get_field('animal').choices)
     return JsonResponse(options)
 
