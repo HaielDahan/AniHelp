@@ -38,6 +38,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
+import Popover from '@mui/material/Popover';
+import { useNavigate } from 'react-router-dom';
+import ItemDetails from './itemetails';
+
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -85,9 +89,22 @@ function Userportalpage() {
   const [checkbox_selection, setCheckboxSlection] = useState([]);
   const [checkbox_selection_2, setCheckboxSlection_2] = useState([]);
   const [filter, setFilter] = useState(false);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [currentItem, setCurrentItem] = useState('');
 
-
+  const navigate = useNavigate();
+  const isMenuOpen = Boolean(menuAnchorEl);
   
+  const handleMenuOpen = (event,currentItem ) => {
+    setMenuAnchorEl(event.currentTarget);
+    setCurrentItem(currentItem);
+  };
+
+const handleMenuClose = () => {
+  setMenuAnchorEl(null);
+};
+
+
 
 
   useEffect(() => {
@@ -298,6 +315,10 @@ function Userportalpage() {
 }
 
 
+const handleDetailsClick = (item) => {
+  navigate('/item-details', { state: { item } });
+};
+
   return (
     <div className="user-portal-page">
       <NavbarOption />
@@ -471,57 +492,76 @@ function Userportalpage() {
         {items
           .filter(item => selectedCategory === 'All' || item.category === selectedCategory || item.animal === selectedCategory || item.size === selectedCategory ) // Filter items based on the selected category
           .map(item => (
+            <React.Fragment key={item.id}>
             <Card sx={{ maxWidth: 345 }}>
-      <CardHeader
-        avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
-          </Avatar>
-        }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title={item.item_name}
-        subheader="September 14, 2016"
-      />
-      <CardMedia
-      component="img"
-      height="194"
-      image={`http://127.0.0.1:8000${item.image}`} // Use item.image directly as the value
-      alt="Paella dish"
-      />
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-        Intended for: {item.animal} size: {item.size}
-        </Typography>
-      </CardContent>
-      <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share" onClick={() => handleShare(item)}>
-          <ShareIcon />
-        </IconButton>
-        <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </ExpandMore>
-      </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Typography paragraph>Description:</Typography>
-          <Typography paragraph>{item.description}</Typography>
-        </CardContent>
-      </Collapse>
-    </Card>            
-
-          ))}
+              <CardHeader
+                avatar={
+                <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                R
+                </Avatar>
+                }
+                action={
+                  <IconButton aria-label="settings" onClick={(event) => handleMenuOpen(event, item)}>
+                    <MoreVertIcon />
+                  </IconButton>
+                }
+                
+                title={item.item_name}
+                subheader="September 14, 2016"
+              />
+              <CardMedia
+                component="img"
+                height="194"
+                image={`http://127.0.0.1:8000${item.image}`} // Use item.image directly as the value
+                alt="Paella dish"
+                />
+              <CardContent>
+                <Typography variant="body2" color="text.secondary">
+                Intended for: {item.animal} size: {item.size}
+                </Typography>
+              </CardContent>
+              <CardActions disableSpacing>
+              <IconButton aria-label="share" onClick={() => handleShare(item)}>
+                <ShareIcon />
+              </IconButton>
+              <ExpandMore
+                expand={expanded}
+                onClick={handleExpandClick}
+                aria-expanded={expanded}
+                aria-label="show more"
+              >
+                <ExpandMoreIcon />
+              </ExpandMore>
+              </CardActions>
+              <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Typography paragraph>Description:</Typography>
+                  <Typography paragraph>{item.description}</Typography>
+                </CardContent>
+              </Collapse>
+            </Card>
+            <Popover
+              open={isMenuOpen}
+              anchorEl={menuAnchorEl}
+              onClose={handleMenuClose}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+                  }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+            {/* Your menu options go here */}
+            <List>
+            <ListItem button onClick={() =>  handleDetailsClick(currentItem)}> {/* Pass the 'item' to the function */}
+              <ListItemText primary="details" />
+              </ListItem>
+            </List>
+          </Popover>
+      </React.Fragment>
+        ))}
       </div>
     </div>
   );
@@ -529,29 +569,12 @@ function Userportalpage() {
 
 export default Userportalpage;
 
+{/* <IconButton aria-label="add to favorites">
+<FavoriteIcon />
+</IconButton> */}
 
 
-
-{/* <Stack spacing={20} direction="row">
-  <Button variant="outlined">All</Button>
-  <Button variant="outlined">Toys</Button>
-  <Button variant="outlined">Food And Related</Button>
-  <Button variant="outlined">Sleep</Button>
-  <Button variant="outlined">Clothing</Button>
-  <Button variant="outlined">Strap</Button>
-  <Button variant="outlined">Cages</Button>
-</Stack> */}
-
-            // <div key={item.id}>
-            // {/* Display item information here */}
-            // <p>Name: {item.item_name}</p>
-            // <p>Size: {item.size}</p>
-            // <p>Animal: {item.animal}</p>
-            // <p>Description: {item.description}</p>
-            // <p>Image: <img
-            //             src={`http://127.0.0.1:8000${item.image}`}
-            //             alt="img"
-            //             className="small-image"
-            //           /></p>
-            
-            // </div>
+// {currentItem && <ItemDetails item={currentItem} />}
+// {/* <ListItem button onClick={() => handleDetailsClick(currentItem)}> {/* Pass the 'item' to the function */}
+// <ListItemText primary="details" />
+// </ListItem> */}

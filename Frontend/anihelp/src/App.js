@@ -7,6 +7,7 @@ import Userportalpage from './UserPortalComps/userportal';
 import Profilepage from './UserPortalComps/profilepage';
 import Account from './UserPortalComps/account';
 import About from './HomePageComponents/about';
+import ItemDetails from './UserPortalComps/itemetails';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="/profile" element = {<Profilepage />}/>
           <Route path="/Myaccount" element = {<Account />}/>
           <Route path="/about" element = {<About />}/>
+          <Route path="/item-details" element = {<ItemDetails />}/>
         </Routes>
       </BrowserRouter>
     </div>

@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import "./loginpage.css";
-import {TextField } from '@mui/material';
+import { TextField, InputAdornment, IconButton } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 
 
@@ -12,6 +14,7 @@ function Loginpage({closeModal}) {
   const[data, setData] = useState({username:'',password:''});
   const[err_message, setErrMessage] = useState('');
   const[err_flag, setErrFlag] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
 
   let navigate = useNavigate();
 
@@ -32,8 +35,12 @@ function Loginpage({closeModal}) {
   
   const handleChange = (e, myKey) =>{
     setData(prevdata=>({...prevdata, [myKey]:e.target.value}))    
-  }
+  };
     
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   return (
     <div className='ModalBackground'>
       <div className='modalContainer'>
@@ -44,13 +51,22 @@ function Loginpage({closeModal}) {
         <label>
               <TextField id="demo-helper-text-aligned" label="User name" value={data.username} onChange={(e) => handleChange(e, 'username')} helperText="Please enter your name" 
               style={{ position: "absolute", left: '37%', top: '25%', display: 'block', width: '50%' }}/>
-              {/* <input type="text" placeholder="Enter your user name" value={data.username} onChange={(e)=>{handleChange(e,'username')}}  /> */}
             </label>
             <br />
             <label>
               <TextField id="demo-helper-text-aligned" label="Password" value={data.password} onChange={(e)=>{handleChange(e,'password')}} helperText="Please enter your password" 
-              style={{ position: "absolute", left: '37%', top: '50%', display: 'block', width: '50%' }}/>
-              {/* <input type="email" placeholder="Enter your email" value={data.email} onChange={(e)=>{handleChange(e,'email')}} /> */}
+              type={showPassword ? 'text' : 'password'} 
+              style={{ position: "absolute", left: '37%', top: '50%', display: 'block', width: '50%' }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleTogglePasswordVisibility}>
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
             </label>
             {err_flag && <p className="errorMessage">{err_message}</p>}
           <button className='submitBtn' type="submit">Submit</button>
