@@ -260,6 +260,29 @@ def get_animals_options(request):
 def get_size_options(request):
     options = dict(Item._meta.get_field('size').choices)
     return JsonResponse(options)
+
+@api_view(['GET'])
+def get_search_items(request):
+    search = request.query_params.get('searchItems')
+    items = Item.objects.filter(item_name__icontains=search)
+    print("i am here items:",items)
+    seri = Itemsserializer(items, many=True)
+    return Response(seri.data)
+
+@api_view(['GET'])
+def get_user_by_item(request):
+    item_id = request.query_params.get('temp[id]')
+    try:
+        item = Item.objects.get(pk=item_id)
+        users_with_item = Account.objects.filter(items=item)
+        serializer = Accountserializer(users_with_item, many=True)
+        return Response(serializer.data)
+    except Item.DoesNotExist:
+        return Response({"error": "Item not found"}, status=404)
+
+
+
+
 # def Accounts_list(request):
 #     accounts = Account.objects.all()
 #     data = serializers.serialize('json', accounts)

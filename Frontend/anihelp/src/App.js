@@ -8,6 +8,7 @@ import Profilepage from './UserPortalComps/profilepage';
 import Account from './UserPortalComps/account';
 import About from './HomePageComponents/about';
 import ItemDetails from './UserPortalComps/itemetails';
+import UserDetailsContact from './UserPortalComps/userdetailscontact';
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/Myaccount" element = {<Account />}/>
           <Route path="/about" element = {<About />}/>
           <Route path="/item-details" element = {<ItemDetails />}/>
+          <Route path="/user-details" element = {<UserDetailsContact />}/>
         </Routes>
       </BrowserRouter>
     </div>

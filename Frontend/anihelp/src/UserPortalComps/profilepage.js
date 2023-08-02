@@ -109,11 +109,15 @@ function Profilepage() {
       }
     }
   };
-
+  const handleSearch = (results) => {
+    if (results.length === 0) {
+      return;
+    }
+  }
 
   return (
     <div>
-      <NavbarOption/>
+      <NavbarOption search={handleSearch}/>
       <div style={{ dislay: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <h1>{titlename}</h1>
       <ul>

@@ -19,7 +19,7 @@ import Collapse from '@mui/material/Collapse';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
+import {  red, green, blue, yellow, purple, pink, orange } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -41,6 +41,22 @@ import FormGroup from '@mui/material/FormGroup';
 import Popover from '@mui/material/Popover';
 import { useNavigate } from 'react-router-dom';
 import ItemDetails from './itemetails';
+// import back from '../photos/gradient.png';
+
+const BackGroundImageStyle = {
+  // backgroundImage: `url(${back})`,
+  background: 'linear-gradient(to bottom, #cddafd, #dfe7fd,#ffffff)',
+  backgroundAttachment: 'fixed',
+  top: '0',
+  left: '0',
+  position: 'fixed',
+  height: '100%',
+  width: '100%',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  zIndex: -1,
+};
+
 
 
 const ExpandMore = styled((props) => {
@@ -55,13 +71,19 @@ const ExpandMore = styled((props) => {
 }));
 
 const style = {
+  position: 'absolute',
   width: '100%',
-  maxWidth: '65%',
+  maxWidth: '62%',
+  left:'17%',
   bgcolor: 'background.paper',
+  backgroundColor: 'rgba(255, 255, 255, 0)', 
+  top:'0%',
 };
 
 
 const card_style = {
+  position: 'absolute',
+  left:'17%',
   width: '100%',
   maxWidth: '65%',
   margin: '0 auto', // Add this line to horizontally center the cards
@@ -69,6 +91,7 @@ const card_style = {
   display: 'grid', // Add a grid layout to the container
   gridTemplateColumns: 'repeat(3, 1fr)', // Arrange cards in 3 columns
   gap: '1%', // Add gap between cards
+  top:'15%',
 };
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -91,6 +114,22 @@ function Userportalpage() {
   const [filter, setFilter] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [currentItem, setCurrentItem] = useState('');
+  const [s_display, setS_Display] = useState([]);
+  const [temp, setTemp] = useState('');
+
+  const categoryEmojis = {
+    toys: '🎁',
+    'food and related products': '🍔',
+    sleep: '😴',
+    clothing: '👕',
+    straps: '🎗️',
+    cages: '🏠',
+  };
+
+  const animalsEmojis = {
+    dog: '🐶❤️',
+    cat: '😺❤️',
+  };
 
   const navigate = useNavigate();
   const isMenuOpen = Boolean(menuAnchorEl);
@@ -184,11 +223,13 @@ const handleMenuClose = () => {
     }
   }, [button_name_2]);
 
+  useEffect(() => {
+    setItems(s_display);
+  }, [s_display]);
+  
   // useEffect(() => {
-  //   console.log("name::", button_name_1);
-  // }, [button_name_1]);
-
-
+  //   console.log("i t e m:",items);
+  // }, [items]);
   const handleCheckboxChange = (index) => (event) => {
     if (event.target.checked === true){
       const newCategoryOptions = [...checkbox_selection,categoryOptions_1[index]];
@@ -200,7 +241,7 @@ const handleMenuClose = () => {
   };
 
   const handleCheckboxChange_2 = (index) => (event) => {
-    console.log("i am here:",event.target.checked)
+    // console.log("i am here:",event.target.checked)
     if (event.target.checked === true){
       const newCategoryOptions = [...checkbox_selection_2,categoryOptions_2[index]];
       setCheckboxSlection_2(newCategoryOptions);
@@ -290,8 +331,8 @@ const handleMenuClose = () => {
     setSelectedCategory(newSelect);
   };
   // useEffect(() => {
-  //   console.log("item:", items);
-  // }, [items]);
+  //  
+  // }, [s_display]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -319,15 +360,44 @@ const handleDetailsClick = (item) => {
   navigate('/item-details', { state: { item } });
 };
 
+const handleUserDetailsClick = (user) => {
+  console.log("user:",user);
+  if (user !== '') {
+    navigate('/user-details', { state: { user } });
+  }
+};
+
+
+useEffect(() => {
+  axios.get('http://127.0.0.1:8000/myapp/user-item',{
+    params: {temp},
+    })
+    .then(res => {
+    console.log(res.data);
+    handleUserDetailsClick(res.data);
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}, [temp]);
+
+useEffect(() => {
+  setItems(s_display);
+}, [s_display]);
+  
+// useEffect(() => {
+//   handleUserDetailsClick(userdetails);
+//   }, [userdetails]);
   return (
     <div className="user-portal-page">
-      <NavbarOption />
+      <NavbarOption search = {setS_Display}/>
+      <div style={BackGroundImageStyle}></div>
       <FormControl style={{ position: 'absolute', top: '15%', left: '2%', color:'#2E2EFE' }}>
       <FormLabel
             id="demo-radio-buttons-group-label"
             style={{
               fontSize: '150%', // Increase the font size
-              color: 'inherit', // Change the text color to red (#ff0000)
+              color: '#000000', // Change the text color to red (#ff0000)
               fontWeight: 'bold', // Optionally, make the text bold
               // Add more text-related styles as needed
             }}
@@ -335,12 +405,12 @@ const handleDetailsClick = (item) => {
         menu options:
         </FormLabel>
         <RadioGroup
-         style={{ position: 'absolute', top: '90%', left: '2%'}}
+         style={{ position: 'absolute', top: '90%', left: '2%', color: '#000000'}}
           aria-labelledby="demo-radio-buttons-group-label"
           value={selectedOption}
           onChange={(event) => handleRadioGropChange(event.target.value)}
         >
-          <FormControlLabel value="products" control={<Radio />} label="Products" />
+          <FormControlLabel  value="products" control={<Radio />} label="Products" />
           <FormControlLabel value="animals" control={<Radio />} label="Animals" />
           <FormControlLabel value="size" control={<Radio />} label="Size" />
         </RadioGroup>
@@ -356,13 +426,13 @@ const handleDetailsClick = (item) => {
               position: 'absolute', 
               top: '40%',
               left: '2%',
-              color:'#2E2EFE'
+              color:'#000000'
             }}
           >
         Advanced filtering:
         </FormLabel>
       
-      <Button variant="outlined" onClick={handleClickOpen} style={{ position: 'absolute', top: '45%', left: '2%' }}>
+      <Button variant="outlined" onClick={handleClickOpen} style={{ position: 'absolute', top: '45%', left: '2%', color: '#000000' }}>
         {button_name_1}
       </Button>
       <Dialog
@@ -393,7 +463,7 @@ const handleDetailsClick = (item) => {
       </Dialog>
 
 
-      <Button variant="outlined" onClick={handleClickOpen_2} style={{ position: 'absolute', top: '52%', left: '2%'}}>
+      <Button variant="outlined" onClick={handleClickOpen_2} style={{ position: 'absolute', top: '52%', left: '2%', color: '#0d47a1'}}>
         {button_name_2}
       </Button>
       <Dialog
@@ -421,68 +491,68 @@ const handleDetailsClick = (item) => {
         </DialogActions>
       </Dialog>
       
-      <div className="button-container">
+      <div className="button-container" >
       {selectedOption === 'products' ? (
         <List sx={style} component="nav" aria-label="mailbox folders">
           <ListItem button onClick={() => handleSelect('All')}> {/* Update the selected category */}
-            <ListItemText primary="All" />
+            <ListItemText style={{ color: '#000000' }} primary="All" />
           </ListItem>
           <ListItem button onClick={() => setSelectedCategory('toys')}>
-        <ListItemText primary="Toys" />
+        <ListItemText style={{ color: '#000000' }} primary="Toys" />
       </ListItem>
       <ListItem button onClick={() => setSelectedCategory('food and related products')}>
-        <ListItemText primary="Food & Related" />
+        <ListItemText style={{ color: '#000000' }} primary="Food & Related" />
       </ListItem>
       <ListItem button onClick={() => setSelectedCategory('sleep')}>
-        <ListItemText primary="Sleep" />
+        <ListItemText style={{ color: '#000000' }} primary="Sleep" />
       </ListItem>
       <ListItem button onClick={() => setSelectedCategory('clothing')}>
-        <ListItemText primary="Clothing" />
+        <ListItemText style={{ color: '#000000' }} primary="Clothing" />
       </ListItem>
       <ListItem button onClick={() => setSelectedCategory('straps')}>
-        <ListItemText primary="Straps" />
+        <ListItemText style={{ color: '#000000' }} primary="Straps" />
       </ListItem>
       <ListItem button onClick={() => setSelectedCategory('cages')}>
-        <ListItemText primary="Cages" />
+        <ListItemText style={{ color: '#000000' }} primary="Cages" />
       </ListItem>
         </List>
         ):selectedOption === 'animals' ? (
         <List sx={style} component="nav" aria-label="mailbox folders">
           <ListItem button onClick={() => handleSelect('All')}>
-            <ListItemText primary="All" />
+            <ListItemText style={{ color: '#000000' }} primary="All" />
           </ListItem>
           <ListItem button onClick={() => setSelectedCategory('dog')}>
-        <ListItemText primary="Dog" />
+        <ListItemText style={{ color: '#000000' }} primary="Dog" />
       </ListItem>
       <ListItem button onClick={() => setSelectedCategory('cat')}>
-        <ListItemText primary="Cat" />
+        <ListItemText style={{ color: '#000000' }} primary="Cat" />
       </ListItem>
         </List>
         ):(
           <List sx={style} component="nav" aria-label="mailbox folders">
           <ListItem button onClick={() => handleSelect('All')}>
-            <ListItemText primary="All" />
+            <ListItemText style={{ color: '#000000' }} primary="All" />
           </ListItem>
           <ListItem button onClick={() => setSelectedCategory('XS')}>
-        <ListItemText primary="XS" />
+        <ListItemText style={{ color: '#000000' }} primary="XS" />
       </ListItem>
       <ListItem button onClick={() => setSelectedCategory('S')}>
-        <ListItemText primary="S" />
+        <ListItemText style={{ color: '#000000' }} primary="S" />
       </ListItem>
       <ListItem button onClick={() => setSelectedCategory('M')}>
-        <ListItemText primary="M" />
+        <ListItemText style={{ color: '#000000' }} primary="M" />
       </ListItem>
       <ListItem button onClick={() => setSelectedCategory('L')}>
-        <ListItemText primary="L" />
+        <ListItemText style={{ color: '#000000' }} primary="L" />
       </ListItem>
       <ListItem button onClick={() => setSelectedCategory('XL')}>
-        <ListItemText primary="XL" />
+        <ListItemText style={{ color: '#000000' }} primary="XL" />
       </ListItem>
       <ListItem button onClick={() => setSelectedCategory('XXL')}>
-        <ListItemText primary="XXL" />
+        <ListItemText style={{ color: '#000000' }} primary="XXL" />
       </ListItem>
       <ListItem button onClick={() => setSelectedCategory('OTHER')}>
-        <ListItemText primary="Other" />
+        <ListItemText style={{ color: '#000000' }} primary="Other" />
       </ListItem>
         </List>
       )}
@@ -493,11 +563,11 @@ const handleDetailsClick = (item) => {
           .filter(item => selectedCategory === 'All' || item.category === selectedCategory || item.animal === selectedCategory || item.size === selectedCategory ) // Filter items based on the selected category
           .map(item => (
             <React.Fragment key={item.id}>
-            <Card sx={{ maxWidth: 345 }}>
+            <Card sx={{ maxWidth: 400 ,backgroundColor: 'rgba(255, 255, 255, 0.6)', borderRadius: '8%' }}>
               <CardHeader
                 avatar={
-                <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                R
+                <Avatar sx={{ bgcolor: blue[50] }} aria-label="recipe">
+                  {categoryEmojis[item.category] || null}
                 </Avatar>
                 }
                 action={
@@ -506,7 +576,11 @@ const handleDetailsClick = (item) => {
                   </IconButton>
                 }
                 
-                title={item.item_name}
+                title={
+                  <Typography variant="h6" style={{ color: '#000000', fontWeight: 'bold' }}>
+                    {item.item_name}
+                  </Typography>
+                }
                 subheader="September 14, 2016"
               />
               <CardMedia
@@ -517,7 +591,7 @@ const handleDetailsClick = (item) => {
                 />
               <CardContent>
                 <Typography variant="body2" color="text.secondary">
-                Intended for: {item.animal} size: {item.size}
+                for:{animalsEmojis[item.animal] || null}
                 </Typography>
               </CardContent>
               <CardActions disableSpacing>
@@ -535,6 +609,7 @@ const handleDetailsClick = (item) => {
               </CardActions>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
+                  <Typography paragraph>size:{item.size}:</Typography>
                   <Typography paragraph>Description:</Typography>
                   <Typography paragraph>{item.description}</Typography>
                 </CardContent>
@@ -555,8 +630,11 @@ const handleDetailsClick = (item) => {
             >
             {/* Your menu options go here */}
             <List>
-            <ListItem button onClick={() =>  handleDetailsClick(currentItem)}> {/* Pass the 'item' to the function */}
-              <ListItemText primary="details" />
+              <ListItem button onClick={() =>  handleDetailsClick(currentItem)}> {/* Pass the 'item' to the function */}
+                <ListItemText primary="details" />
+              </ListItem>
+              <ListItem button onClick={() =>  setTemp(currentItem)}> {/* Pass the 'item' to the function */}
+                <ListItemText primary="contact" />
               </ListItem>
             </List>
           </Popover>

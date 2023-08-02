@@ -50,13 +50,13 @@ function Loginpage({closeModal}) {
         <form onSubmit={handleSubmit}>
         <label>
               <TextField id="demo-helper-text-aligned" label="User name" value={data.username} onChange={(e) => handleChange(e, 'username')} helperText="Please enter your name" 
-              style={{ position: "absolute", left: '37%', top: '25%', display: 'block', width: '50%' }}/>
+              style={{ position: "absolute", left: '37%', top: '25%', display: 'block', width: '26%' }}/>
             </label>
             <br />
             <label>
               <TextField id="demo-helper-text-aligned" label="Password" value={data.password} onChange={(e)=>{handleChange(e,'password')}} helperText="Please enter your password" 
               type={showPassword ? 'text' : 'password'} 
-              style={{ position: "absolute", left: '37%', top: '50%', display: 'block', width: '50%' }}
+              style={{ position: "absolute", left: '37%', top: '50%', display: 'block', width: '26%' }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">

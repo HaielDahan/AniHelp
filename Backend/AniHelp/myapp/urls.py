@@ -14,5 +14,7 @@ urlpatterns = [
     path('animals-options/', get_animals_options),
     path('size-options/', get_size_options),
     path('menu', views.Menu_items_detail),
+    path('search', views.get_search_items),
+    path('user-item', views.get_user_by_item),
 ]
 #+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

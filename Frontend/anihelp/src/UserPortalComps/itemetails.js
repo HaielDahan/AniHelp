@@ -37,15 +37,21 @@ const styles = {
 };
 
 
+
 function ItemDetails() {
   const location = useLocation();
   const item = location?.state?.item;
   const navigate = useNavigate();
   
-
+  const handleSearch = (results) => {
+    if (results.length === 0) {
+      return;
+    }
+  }
+  
   return( 
       <div>
-        <NavbarOption />
+        <NavbarOption search={handleSearch}/>
         <button style={styles.backButton} onClick={() => navigate('/userportal')}>
           Back
         </button>

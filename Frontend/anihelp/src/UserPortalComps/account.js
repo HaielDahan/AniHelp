@@ -282,7 +282,7 @@ export default function EnhancedTable() {
       marginRight: '20px', // Add margin to the right to create space between back button and title
     },
     title: {
-      marginLeft: '35%', // Adjust the value as per your preference to move the title to the left
+      marginLeft: '41%', // Adjust the value as per your preference to move the title to the left
       flexGrow: 1, // This makes the title occupy the remaining space and pushes the back button to the left side
       textAlign: 'left', // You can align the text to the left or center based on your preference
     },
@@ -614,15 +614,16 @@ export default function EnhancedTable() {
       });
   }, []);
   const navigate = useNavigate();
-  
+  const handleSearch = (results) => {
+    if (results.length === 0) {
+      return;
+    }
+  }
 
 return (
   <div>
-    <NavbarOption />
+      <NavbarOption search={handleSearch}/>
     <Box sx={back_styles.container} >
-    <button style={back_styles.backButton} onClick={() => navigate('/userportal')}>
-        Back
-      </button>
       <div style={back_styles.title}>
       <h1>Personal Area</h1>
       </div>
