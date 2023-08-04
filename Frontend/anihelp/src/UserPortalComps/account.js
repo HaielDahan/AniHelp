@@ -39,6 +39,8 @@ import {
   // other Material-UI imports...
 } from '@mui/material';  
 /// ****It will remain for me to arrange the addition of products and editing of products and correct the sorting*****
+import logo from '../photos/logo.png';
+
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -265,7 +267,8 @@ export default function EnhancedTable() {
   const [animalOptions, setAnimalOptions] = useState([]);
   const [sizeOptions, setSizeOptions] = useState([]);
   
-  
+  const navigate = useNavigate();
+
   const back_styles = {
     container: {
       display: 'flex',
@@ -282,10 +285,77 @@ export default function EnhancedTable() {
       marginRight: '20px', // Add margin to the right to create space between back button and title
     },
     title: {
+      position: 'absolute',
       marginLeft: '41%', // Adjust the value as per your preference to move the title to the left
       flexGrow: 1, // This makes the title occupy the remaining space and pushes the back button to the left side
       textAlign: 'left', // You can align the text to the left or center based on your preference
+      fontSize:'20%',
+      fontWeight: 300,
+      textShadow: '2px 2px rgba(0, 0, 0, 0.4)',
+      position: 'relative',
     },
+    titleBefore: {
+      content: ' ',
+      display: 'block',
+      borderBottom: '1px solid #c50000',
+      borderTop: '1px solid #c50000',
+      height: '5px',
+      backgroundColor: '#f8f8f8',
+      position: 'absolute',
+      top: '50%',
+      left: '30%',
+      width: '30%',
+    },
+    titleAfter: {
+      content: ' ',
+      display: 'block',
+      borderBottom: '1px solid #c50000',
+      borderTop: '1px solid #c50000',
+      height: '5px',
+      backgroundColor: '#f8f8f8',
+      position: 'absolute',
+      bottom: '0',
+      top: '50%',
+      left: '-33%',
+      width: '30%',
+    },
+    BackGroundImageStyle:{
+      background: 'linear-gradient(to bottom, #cddafd, #dfe7fd,#ffffff)',
+      backgroundAttachment: 'fixed',
+      top: '0',
+      left: '0',
+      position: 'fixed',
+      height: '100%',
+      width: '100%',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      zIndex: -1,
+    },
+    chart:{
+      width: '80%',
+      marginLeft: '10%', // Adjust the left margin as needed to move the chart left
+      backgroundColor: 'rgba(255, 255, 255, 0)',
+    },
+    paperstyle:{
+      width: '100%', 
+      mb: 0,
+      backgroundColor: 'rgba(255, 255, 255, 0.7)' ,
+      borderRadius: '1%',
+      boxShadow: '7px 7px 5px 3px rgba(173, 216, 230, 0.75)',
+    },
+    backButton:{
+      position: 'absolute',
+      top:"9%",
+      left:"1.5%",
+      backgroundColor: 'rgba(255, 255, 255, 0)',
+    },
+    logoStyle: {
+      position: 'absolute',
+      top: '-3.5%',
+      left: '2%',
+      width: '180px', // Change the width to your desired size
+      height: 'auto',
+    }
   };
 
   
@@ -613,7 +683,7 @@ export default function EnhancedTable() {
         console.error(error);
       });
   }, []);
-  const navigate = useNavigate();
+
   const handleSearch = (results) => {
     if (results.length === 0) {
       return;
@@ -622,14 +692,21 @@ export default function EnhancedTable() {
 
 return (
   <div>
-      <NavbarOption search={handleSearch}/>
+    <div style={back_styles.BackGroundImageStyle}></div>
+      <img src={logo} alt="images" style={back_styles.logoStyle}/>
+      {/* <NavbarOption search={handleSearch}/> */}
     <Box sx={back_styles.container} >
+    <button style={back_styles.backButton} onClick={() => navigate('/userportal')}>
+        Portal
+      </button>
       <div style={back_styles.title}>
       <h1>Personal Area</h1>
+        <span style={back_styles.titleBefore}></span>
+        <span style={back_styles.titleAfter}></span>
       </div>
     </Box>
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
+    <Box sx={back_styles.chart}>
+      <Paper sx={back_styles.paperstyle}>
         <EnhancedTableToolbar
           numSelected={selected.length}
           itemsfordelete={itemsForDelete}

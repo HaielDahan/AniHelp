@@ -77,22 +77,35 @@ const style = {
   left:'17%',
   bgcolor: 'background.paper',
   backgroundColor: 'rgba(255, 255, 255, 0)', 
-  top:'0%',
+  top:'9.5%',
 };
 
 
 const card_style = {
-  position: 'absolute',
-  left:'17%',
-  width: '100%',
-  maxWidth: '65%',
-  margin: '0 auto', // Add this line to horizontally center the cards
-  bgcolor: 'background.paper',
-  display: 'grid', // Add a grid layout to the container
-  gridTemplateColumns: 'repeat(3, 1fr)', // Arrange cards in 3 columns
-  gap: '1%', // Add gap between cards
-  top:'15%',
+  external: {
+    position: 'absolute',
+    left: '17%',
+    width: '100%',
+    maxWidth: '65%',
+    margin: '0 auto', // Add this line to horizontally center the cards
+    backgroundColor: 'background.paper', // Fix: Use backgroundColor instead of bgcolor
+    display: 'grid', // Add a grid layout to the container
+    gridTemplateColumns: 'repeat(3, 1fr)', // Arrange cards in 3 columns
+    gap: '1%', // Add gap between cards
+    top: '18.5%',
+  },
+  internal: {
+    maxWidth: 400,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    borderRadius: '8%',
+    boxShadow: '10px 10px 5px 1px rgba(173, 216, 230, 0.75)',
+    transition: 'transform 0.3s ease',
+    '&:hover': { // Wrap hover styles in a nested object
+      transform: 'scale(1.05)',
+    },
+  },
 };
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -392,7 +405,7 @@ useEffect(() => {
     <div className="user-portal-page">
       <NavbarOption search = {setS_Display}/>
       <div style={BackGroundImageStyle}></div>
-      <FormControl style={{ position: 'absolute', top: '15%', left: '2%', color:'#2E2EFE' }}>
+      <FormControl style={{ position: 'absolute', top: '20%', left: '2%', color:'#2E2EFE' }}>
       <FormLabel
             id="demo-radio-buttons-group-label"
             style={{
@@ -405,7 +418,7 @@ useEffect(() => {
         menu options:
         </FormLabel>
         <RadioGroup
-         style={{ position: 'absolute', top: '90%', left: '2%', color: '#000000'}}
+         style={{ position: 'absolute', top: '150%', left: '2%', color: '#000000'}}
           aria-labelledby="demo-radio-buttons-group-label"
           value={selectedOption}
           onChange={(event) => handleRadioGropChange(event.target.value)}
@@ -424,7 +437,7 @@ useEffect(() => {
               color: 'inherit', // Change the text color to red (#ff0000)
               fontWeight: 'bold', // Optionally, make the text bold
               position: 'absolute', 
-              top: '40%',
+              top: '44%',
               left: '2%',
               color:'#000000'
             }}
@@ -432,7 +445,7 @@ useEffect(() => {
         Advanced filtering:
         </FormLabel>
       
-      <Button variant="outlined" onClick={handleClickOpen} style={{ position: 'absolute', top: '45%', left: '2%', color: '#000000' }}>
+      <Button variant="outlined" onClick={handleClickOpen} style={{ position: 'absolute', top: '49%', left: '2%', color: '#000000' }}>
         {button_name_1}
       </Button>
       <Dialog
@@ -463,7 +476,7 @@ useEffect(() => {
       </Dialog>
 
 
-      <Button variant="outlined" onClick={handleClickOpen_2} style={{ position: 'absolute', top: '52%', left: '2%', color: '#0d47a1'}}>
+      <Button variant="outlined" onClick={handleClickOpen_2} style={{ position: 'absolute', top: '55%', left: '2%', color: '#0d47a1'}}>
         {button_name_2}
       </Button>
       <Dialog
@@ -558,12 +571,12 @@ useEffect(() => {
       )}
       </div>
 
-      <div className="items-container" style={card_style}>
+      <div className="items-container" style={card_style.external}>
         {items
           .filter(item => selectedCategory === 'All' || item.category === selectedCategory || item.animal === selectedCategory || item.size === selectedCategory ) // Filter items based on the selected category
           .map(item => (
             <React.Fragment key={item.id}>
-            <Card sx={{ maxWidth: 400 ,backgroundColor: 'rgba(255, 255, 255, 0.6)', borderRadius: '8%' }}>
+            <Card sx={card_style.internal}>
               <CardHeader
                 avatar={
                 <Avatar sx={{ bgcolor: blue[50] }} aria-label="recipe">

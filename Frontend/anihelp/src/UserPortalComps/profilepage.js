@@ -1,26 +1,75 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import back from '../photos/back3.jpg';
 import NavbarOption from './navbar';
 import { Navbar } from 'react-bootstrap';
+import boy from '../photos/boy.png';
+import girl from '../photos/girl.png';
+
 const styles = {
+  BackGroundImageStyle:{
+    background: 'linear-gradient(to bottom, #cddafd, #dfe7fd,#ffffff)',
+    backgroundAttachment: 'fixed',
+    top: '0',
+    left: '0',
+    position: 'fixed',
+    height: '100%',
+    width: '100%',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    zIndex: -1,
+  },
   container: {
     position: 'relative',
     height: '100vh',
     backgroundColor: 'rgba(255, 255, 255, 0.5)', // Adjust the alpha value as needed
   },
-  background: {
-    position: 'absolute',
-    top: 0,
-    left: 250,
-    width: '70%',
-    height: '100%',
-    backgroundImage: `url(${back})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    opacity: 0.5, // Adjust the opacity value as needed
+
+  avatar: {
+    verticalalign: 'middle',
+    width: '20%',
+    height: '37%',
+    borderradius: '50%',
+    position:'absolute',
+    top:'10%',
+    left:'40%',
   },
+  buttonPositin:{
+    position:'absolute',
+    top:'20%',
+    left:'90%',
+  },
+  EditButtonPositin:{
+    position:'absolute',
+    top:'-160%',
+    left:'200%',
+  },
+  DeleteButtonPositin:{
+    position:'absolute',
+    top:'-160%',
+    left:'235%',
+  },
+  SaveButtonPositin:{
+    position:'absolute',
+    top:'-100%',
+    left:'70%',
+  },
+  CancelButtonPositin:{
+    position:'absolute',
+    top:'-100%',
+    left:'90%',
+  },
+  // background: {
+  //   position: 'absolute',
+  //   top: 0,
+  //   left: 250,
+  //   width: '70%',
+  //   height: '100%',
+  //   backgroundImage: `url(${back})`,
+  //   backgroundSize: 'cover',
+  //   backgroundPosition: 'center',
+  //   opacity: 0.5, // Adjust the opacity value as needed
+  // },
 };
 
 
@@ -116,20 +165,26 @@ function Profilepage() {
   }
 
   return (
-    <div>
+    <div style={styles.BackGroundImageStyle}>
       <NavbarOption search={handleSearch}/>
-      <div style={{ dislay: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      {personprofile.gender ==='male' ?(
+        <img src={boy} alt="images" style={styles.avatar}/>
+      ):
+      (
+        <img src={girl} alt="images" style={styles.avatar}/>
+      )}
+      <div style={{position:'absolute', dislay: 'flex', flexDirection: 'column', alignItems: 'center' ,top:'50%', left:'47%'}}>
       <h1>{titlename}</h1>
       <ul>
       <p>
-        Name: {isEditing ? (
+        {isEditing ? (
           <input
             type="text"
             value={personprofile.name}
             onChange={(e) => handleFieldChange('name', e.target.value)}
           />
         ) : (
-          personprofile.name
+          null
         )}
       </p>
       </ul>
@@ -194,14 +249,13 @@ function Profilepage() {
       </ul>
       {isEditing ? (
         <>
-        <button onClick={handleSave}>Save</button>
-        <button onClick={handleCancelEdit}>cancel</button>
+        <button style={styles.SaveButtonPositin} onClick={handleSave}>Save</button>
+        <button style={styles.CancelButtonPositin} onClick={handleCancelEdit}>cancel</button>
         </>
       ) : (
         <>
-        <button onClick={handleEdit}>Edit</button>
-        <button onClick={handleDelete}>Delete</button>
-        <button onClick={() => navigate('/userportal')}>Back</button>
+        <button style={styles.EditButtonPositin} onClick={handleEdit}>Edit</button>
+        <button style={styles.DeleteButtonPositin} onClick={handleDelete}>Delete</button>
         </>
       )}
       </div>

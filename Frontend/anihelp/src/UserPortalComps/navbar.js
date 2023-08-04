@@ -16,8 +16,16 @@ import MenuItem from '@mui/material/MenuItem';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { useLocation } from 'react-router-dom';
 import SvgIcon from '@mui/material/SvgIcon';
+import logo from '../photos/logo.png';
 
 
+const logoStyle = {
+  position: 'absolute',
+  top: '-3.5%',
+  left: '2%',
+  width: '180px', // Change the width to your desired size
+  height: 'auto',
+};
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -140,7 +148,8 @@ const handleSearchChange = (event) => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" style={{ backgroundColor: '#000000', height: 0  }} elevation={0}>
+        <img src={logo} alt="images" style={logoStyle}/>
+        <AppBar position="static" style={{ backgroundColor: '#000000', height: 0, position: 'absolute',top:'9.5%', }} elevation={0}>
         <Toolbar>
         <IconButton
         color="#000000"
@@ -150,7 +159,9 @@ const handleSearchChange = (event) => {
         },
       }}
     >
-      <HomeIcon onClick={() => navigate('/userportal')}/>
+      {!isUserPortal && (
+       <HomeIcon onClick={() => navigate('/userportal')}/> 
+      )}
       </IconButton>
           <Typography
             variant="h6"

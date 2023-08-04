@@ -6,6 +6,19 @@ import { useNavigate } from 'react-router-dom';
 
 
 const styles = {
+  BackGroundImageStyle:{
+  background: 'linear-gradient(to bottom, #cddafd, #dfe7fd,#ffffff)',
+  backgroundAttachment: 'fixed',
+  top: '0',
+  left: '0',
+  position: 'fixed',
+  height: '100%',
+  width: '100%',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  zIndex: -1,
+},
+
   backButton: {
     position: 'absolute',
     top: '12%',
@@ -50,11 +63,8 @@ function ItemDetails() {
   }
   
   return( 
-      <div>
+      <div style={styles.BackGroundImageStyle}>
         <NavbarOption search={handleSearch}/>
-        <button style={styles.backButton} onClick={() => navigate('/userportal')}>
-          Back
-        </button>
         <div style={styles.imageDiv}>
         {item && (
           <img
