@@ -28,25 +28,29 @@ const styles = {
     border: 'none',
     cursor: 'pointer',
   },
-  imageDiv: {
-    position: 'absolute', 
-    top: '20%', 
-    left: '20%',
-  },
   image:{
-    width: '30%', 
-    height: '45%',
+    position: 'absolute', 
+    top: '30%', 
+    left: '10%',
+    width: '25%', 
+    height: '50%',
+
   },
   style_name:{
     position: 'absolute', 
-    top: '40%', 
-    left: '20%',
+    top: '31%', 
+    left: '42%',
+    textTransform: 'uppercase',
+    textDecoration: 'overline underline',
+    textShadow:'2px 2px 5px white',
+    fontFamily:'serif',
   },
   item_details:{
     position: 'absolute', 
     top: '50%', 
-    left: '20%',
+    left: '40%',
   },
+  
 };
 
 
@@ -65,7 +69,6 @@ function ItemDetails() {
   return( 
       <div style={styles.BackGroundImageStyle}>
         <NavbarOption search={handleSearch}/>
-        <div style={styles.imageDiv}>
         {item && (
           <img
             src={`http://127.0.0.1:8000${item.image}`}
@@ -73,14 +76,15 @@ function ItemDetails() {
             style={styles.image}
           />
         )}
-        </div>
       <h1 style={styles.style_name}>{item.item_name}</h1>;
-      <div style={styles.item_details}>
-        <p>adapted to: {item.animal}</p>
-        <p>size: {item.size}</p>
-        <p>description: {item.description}</p>
+        <p style={{position:'absolute', top:'38%', left:'42%', width:'30%'}}>{item.description}</p>
+        <h5 style={{position:'absolute', top:'72%', left:'42%'}}>adapted to:</h5>
+        <p style={{position:'absolute', top:'72%', left:'49%'}}>{item.animal}s</p>
+        <h5 style={{position:'absolute', top:'77%', left:'42%'}}>size:</h5>
+        <p style={{position:'absolute', top:'77%', left:'49%'}}>{item.size}</p>
+        <div style={{position: 'absolute',top:'20%', bottom: 0, left: 0, width: '100%', height: '2px', backgroundColor: 'white'}}></div>
+        <div style={{position: 'absolute',top:'90%', bottom: 0, left: 0, width: '100%', height: '2px', backgroundColor: ' #cddafd'}}></div>
       </div>
-    </div>
   );
 }
 

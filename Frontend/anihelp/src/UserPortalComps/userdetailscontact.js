@@ -40,10 +40,12 @@ function UserDetailsContact() {
   <div style={style.BackGroundImageStyle}>
     <NavbarOption search={handleSearch}/>
     <div style={style.detailstyle}>
-      {user && user.length > 0 ? (
+      {user ? (
         <React.Fragment>
-        <h1>{user[0].name}</h1>
-        <p>{user[0].prefix} - {user[0].phone}</p>
+        <h1>{user.name}</h1>
+        <p>{user.email}</p>
+        <p>{user.place}</p>
+        <p>{user.prefix} - {user.phone}</p>
       </React.Fragment>
         ) : (
         <h1>User data not found.</h1>

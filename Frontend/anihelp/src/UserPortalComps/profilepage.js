@@ -31,8 +31,8 @@ const styles = {
     height: '37%',
     borderradius: '50%',
     position:'absolute',
-    top:'10%',
-    left:'40%',
+    top:'25%',
+    left:'25%',
   },
   buttonPositin:{
     position:'absolute',
@@ -41,24 +41,52 @@ const styles = {
   },
   EditButtonPositin:{
     position:'absolute',
-    top:'-160%',
-    left:'200%',
+    top:'-40%',
+    left:'275%',
   },
   DeleteButtonPositin:{
     position:'absolute',
-    top:'-160%',
-    left:'235%',
+    top:'-40%',
+    left:'350%',
   },
   SaveButtonPositin:{
     position:'absolute',
-    top:'-100%',
+    top:'-40%',
     left:'70%',
   },
   CancelButtonPositin:{
     position:'absolute',
-    top:'-100%',
+    top:'-40%',
     left:'90%',
   },
+  Genderdetail:{
+    position:'absolute',
+    top:'0%',
+    left:'120%',
+  },
+  Agedetail:{
+    position:'absolute',
+    top:'28%',
+    left:'120%',
+  },
+  Residencedetail:{
+    position:'absolute',
+    top:'50%',
+    left:'120%',
+    width: '100%'
+  },
+  Phonedetail:{
+    position:'absolute',
+    top:'75%',
+    left:'120%',
+  },
+  tooltip:{
+    position:'absolute',
+    top:'90%',
+    left:'0%',
+    display: 'inline-block',
+    borderBottom:' 1px dotted black',
+  }
   // background: {
   //   position: 'absolute',
   //   top: 0,
@@ -173,12 +201,12 @@ function Profilepage() {
       (
         <img src={girl} alt="images" style={styles.avatar}/>
       )}
-      <div style={{position:'absolute', dislay: 'flex', flexDirection: 'column', alignItems: 'center' ,top:'50%', left:'47%'}}>
-      <h1>{titlename}</h1>
+      <h1 style={{position:'absolute', top:'63%', left:'33.05%',fontFamily:'serif',textShadow:'2px 2px 5px white',}}>{titlename}</h1>
       <ul>
       <p>
         {isEditing ? (
           <input
+          style={{position:'absolute', top:'69%', left:'33.05%'}}
             type="text"
             value={personprofile.name}
             onChange={(e) => handleFieldChange('name', e.target.value)}
@@ -188,46 +216,56 @@ function Profilepage() {
         )}
       </p>
       </ul>
-      <ul>
-      <p>
+      <div style={{position:'absolute', dislay: 'flex', flexDirection: 'column', alignItems: 'center',top:'34%', left:'47%'}}>
+      <ul style={{marginBottom: '7%'}}>
+      <p >
         Gender: {isEditing ? (
           <input
             type="text"
+            style={{position:'absolute', top:'0%', left:'30%'}}
             value={personprofile.gender}
             onChange={(e) => handleFieldChange('gender', e.target.value)}
           />
         ) : (
-          personprofile.gender
+          <div style={styles.Genderdetail}>
+          {personprofile.gender}
+          </div>
         )}
       </p>
       </ul>
-      <ul>
+      <ul style={{marginBottom: '7%'}}>
       <p>
         Age: {isEditing ? (
           <input
             type="text"
+            style={{position:'absolute', top:'22%', left:'30%'}}
             value={personprofile.age}
             onChange={(e) => handleFieldChange('age', e.target.value)}
           />
         ) : (
-          personprofile.age
+          <div  style={styles.Agedetail}>
+          {personprofile.age}
+          </div>
         )}
       </p>
       </ul>
-      <ul>
+      <ul style={{marginBottom: '7%'}}>
       <p>
         Residence: {isEditing ? (
           <input
             type="text"
+            style={{position:'absolute', top:'44%', left:'30%'}}
             value={personprofile.place}
             onChange={(e) => handleFieldChange('place', e.target.value)}
           />
         ) : (
-          personprofile.place
+          <div  style={styles.Residencedetail}>
+          {personprofile.place}
+          </div>
         )}
       </p>
       </ul>
-      <ul>
+      <ul style={{marginBottom: '7%'}}>
       <p>
         Phone number: {isEditing ? (
           <>
@@ -243,7 +281,9 @@ function Profilepage() {
             />
           </>
         ) : (
-          personprofile.prefix + personprofile.phone
+          <div  style={styles.Phonedetail}>
+          {personprofile.prefix + personprofile.phone}
+          </div>
         )}
       </p>
       </ul>
@@ -259,6 +299,7 @@ function Profilepage() {
         </>
       )}
       </div>
+      <div style={{position: 'absolute',top:'90%', bottom: 0, left: 0, width: '100%', height: '2px', backgroundColor: ' #cddafd'}}></div>
     </div>
   );
 }

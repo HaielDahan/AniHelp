@@ -2,7 +2,7 @@ import json
 
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .forms import AccountForm, Accountserializer, Itemsserializer, RegisterSerializer, LoginSerializer
+from .forms import AccountForm, Accountserializer, Itemsserializer, RegisterSerializer, LoginSerializer,AccountSerializer
 from .models import Account, Item
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -275,7 +275,9 @@ def get_user_by_item(request):
     try:
         item = Item.objects.get(pk=item_id)
         users_with_item = Account.objects.filter(items=item)
-        serializer = Accountserializer(users_with_item, many=True)
+        # serializer = Accountserializer(users_with_item, many=True)
+        if users_with_item.exists():
+            serializer = AccountSerializer(users_with_item.first())
         return Response(serializer.data)
     except Item.DoesNotExist:
         return Response({"error": "Item not found"}, status=404)

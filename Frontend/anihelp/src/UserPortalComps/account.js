@@ -43,16 +43,21 @@ import logo from '../photos/logo.png';
 
 
 function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
+  // console.log("orderBy", orderBy.toLowerCase());
+  // console.log("a:", a[orderBy.toLowerCase()]);
+  // console.log("b:", b[orderBy.toLowerCase()]);
+  if (b[orderBy.toLowerCase()] < a[orderBy.toLowerCase()]) {
     return -1;
   }
-  if (b[orderBy] > a[orderBy]) {
+  if (b[orderBy.toLowerCase()] > a[orderBy.toLowerCase()]) {
     return 1;
   }
   return 0;
 }
 
 function getComparator(order, orderBy) {
+  // console.log("order:",order);
+  // console.log("orderBy:", orderBy);
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -111,8 +116,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
-    props;
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -474,10 +478,11 @@ export default function EnhancedTable() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = visibleRows.map((row) => row.id);
+      const newSelected = items.map((row) => row.id);
       setSelected(newSelected);
       setItemsForDelete(newSelected); // Add all items to itemsForDelete
     } else {
+      console.log("lalala")
       setSelected([]);
       setItemsForDelete([]); // Clear the itemsForDelete array
     }

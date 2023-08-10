@@ -17,10 +17,20 @@ class LoginSerializer(serializers.Serializer):
         raise serializers.ValidationError('Invalid username or password')
 
 
+class AccountSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(source='user.id')  # Include user_id
+    username = serializers.CharField(source='user.username')  # Include username
+    email = serializers.EmailField(source='user.email')  # Include email
+    class Meta:
+        model = Account
+        fields = ['user_id', 'username', 'email','name', 'gender', 'age', 'place', 'prefix', 'phone']
+
 class Accountserializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ['user','name', 'gender', 'age', 'place', 'prefix', 'phone']
+        fields = ['user', 'name', 'gender', 'age', 'place', 'prefix', 'phone']
+
+
 
 
 class Itemsserializer(serializers.ModelSerializer):
