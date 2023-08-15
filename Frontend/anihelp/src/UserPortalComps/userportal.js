@@ -41,6 +41,7 @@ import FormGroup from '@mui/material/FormGroup';
 import Popover from '@mui/material/Popover';
 import { useNavigate } from 'react-router-dom';
 import ItemDetails from './itemetails';
+import UserDetailsContact from './userdetailscontact';
 // import back from '../photos/gradient.png';
 
 const BackGroundImageStyle = {
@@ -129,6 +130,9 @@ function Userportalpage() {
   const [currentItem, setCurrentItem] = useState('');
   const [s_display, setS_Display] = useState([]);
   const [temp, setTemp] = useState('');
+  const [openModal, setOpenModal] = useState(false);
+  const [contant, setContant] = useState([]);
+  
 
   const categoryEmojis = {
     toys: '🎁',
@@ -373,12 +377,12 @@ const handleDetailsClick = (item) => {
   navigate('/item-details', { state: { item } });
 };
 
-const handleUserDetailsClick = (user) => {
-  console.log("user:",user);
-  if (user !== '') {
-    navigate('/user-details', { state: { user } });
-  }
-};
+// const handleUserDetailsClick = (user) => {
+//   console.log("user:",user);
+//   if (user !== '') {
+//     navigate('/user-details', { state: { user } });
+//   }
+// };
 
 
 useEffect(() => {
@@ -387,7 +391,9 @@ useEffect(() => {
     })
     .then(res => {
     console.log(res.data);
-    handleUserDetailsClick(res.data);
+    // handleUserDetailsClick(res.data);
+    setContant(res.data);
+    // setOpenModal(true);
     })
     .catch(error => {
       console.error(error);
@@ -643,12 +649,13 @@ useEffect(() => {
             >
             {/* Your menu options go here */}
             <List>
-              <ListItem button onClick={() =>  handleDetailsClick(currentItem)}> {/* Pass the 'item' to the function */}
+              <ListItem button onClick={() => handleDetailsClick(currentItem)}>
                 <ListItemText primary="details" />
               </ListItem>
-              <ListItem button onClick={() =>  setTemp(currentItem)}> {/* Pass the 'item' to the function */}
+              <ListItem button onClick={() => { setTemp(currentItem); setOpenModal(true); }}>
                 <ListItemText primary="contact" />
               </ListItem>
+              {openModal && <UserDetailsContact closeModal={setOpenModal}  detail={contant} />}
             </List>
           </Popover>
       </React.Fragment>

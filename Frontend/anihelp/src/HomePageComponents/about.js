@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const styles = {
   container: {
+    background: 'linear-gradient(to bottom, #cddafd, #dfe7fd, #ffffff)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
